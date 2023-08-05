@@ -1,3 +1,4 @@
 pytest
 simple-salesforce
 pyyaml
+SQLAlchemy
