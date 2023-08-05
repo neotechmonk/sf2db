@@ -30,7 +30,7 @@ class SalesforceConfig:
     security_token:str
     consumer_key:str
     consumer_secret :str
-    is_prod: bool = field(default=False, metadata={"exclude": True})
+    is_prod: bool = field(default=False)
 
     @property
     def domain(self) -> str:
