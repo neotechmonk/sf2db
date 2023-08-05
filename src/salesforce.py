@@ -53,7 +53,7 @@ def read_config(file: str = CONFIG_FILE) -> SalesforceConfig:
     except yaml.YAMLError as e:
         raise ConfigParseError(f"Error parsing the YAML file: {str(e)}")
 
-def login(credentials: SalesforceConfig)->Salesforce:
+def login( credentials : SalesforceConfig) -> Salesforce:
     try:
         sf =   Salesforce(
             username=credentials.username,
@@ -62,16 +62,16 @@ def login(credentials: SalesforceConfig)->Salesforce:
             consumer_key=credentials.consumer_key,
             consumer_secret=credentials.consumer_secret,
             domain=credentials.domain)
-   
+
         if not sf.session_id: 
-            raise AuthententicationFailedError ( "Authentication failed: No session id returned")
-        
+            raise AuthententicationFailedError("Authentication failed: No session id returned")
+
         return sf
     except SalesforceAuthenticationFailed as e:
         raise AuthententicationFailedError(f"Authentication failed: {str(e)}")
 
 
-
 if __name__ == "__main__":
-    print(login(read_config()))
+    credentials : SalesforceConfig  = read_config(CONFIG_FILE)
+    print(login(credentials))
 
