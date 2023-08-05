@@ -1,0 +1,12 @@
+# Configuration file for Salesforce credentials
+# Rename to login.yaml to productionise and change the below configs
+
+#User credentials
+username: your_salesforce_username
+password: your_salesforce_password
+security_token: your_security_token
+
+#Connected App OAuthuth credentials
+consumer_key: your_consumer_key
+consumer_secret: your_consumer_secret
+domain: test #UAT/DEV =  test, PROD = login
