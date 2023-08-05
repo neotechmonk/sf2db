@@ -9,4 +9,4 @@ security_token: your_security_token
 #Connected App OAuthuth credentials
 consumer_key: your_consumer_key
 consumer_secret: your_consumer_secret
-domain: test #UAT/DEV =  test, PROD = login
+is_prod: false #UAT/DEV =  false, PROD = true
