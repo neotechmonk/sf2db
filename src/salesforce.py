@@ -1,4 +1,4 @@
-from dataclasses import asdict, dataclass, field
+from dataclasses import dataclass, field
 
 import yaml
 from simple_salesforce import Salesforce
@@ -42,7 +42,6 @@ class SalesforceConfig:
                 raise ConfigValueError(f"credential attribute '{attr}' should not be empty!")
 
 # Load Salesforce credentials from login.yaml
-
 def read_config(file: str = CONFIG_FILE) -> SalesforceConfig:
     try:
         with open(file, 'r') as f:
@@ -71,7 +70,12 @@ def login( credentials : SalesforceConfig) -> Salesforce:
         raise AuthententicationFailedError(f"Authentication failed: {str(e)}")
 
 
+# For diagnostics in production 
 if __name__ == "__main__":
     credentials : SalesforceConfig  = read_config(CONFIG_FILE)
-    print(login(credentials))
+    sf :Salesforce  = login(credentials)
+    print("Logged into Salesforce")
+
+    for attr_name, attr_value in vars(sf).items():
+        print(f"{attr_name} : {attr_value}")
 

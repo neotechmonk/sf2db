@@ -8,19 +8,10 @@ from sqlalchemy import (Column, Integer, MetaData, PrimaryKeyConstraint,
                         String, Table, create_engine, select)
 from sqlalchemy.orm import declarative_base, sessionmaker
 
-# Load Salesforce credentials from login.yaml
-with open('./config/login.yaml', 'r') as file:
-    credentials = yaml.safe_load(file)
+import salesforce
 
-# Create a Salesforce instance
-sf = Salesforce(
-    username=credentials["username"],
-    password=credentials["password"],
-    security_token=credentials["security_token"],
-    consumer_key=credentials["consumer_key"],
-    consumer_secret=credentials["consumer_secret"],
-    domain=credentials["domain"]
-)
+salesforce_credentials = salesforce.read_config(salesforce.CONFIG_FILE)
+sf : Salesforce = salesforce.login(salesforce_credentials)
 
 # Load object-to-table mappings from object_mappings.json
 with open('./config/object_mappings.json', 'r') as file:
