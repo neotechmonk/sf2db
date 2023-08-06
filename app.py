@@ -1,17 +1,14 @@
 import json
 import re
-import time
 
-import yaml
 from simple_salesforce import Salesforce
 from sqlalchemy import (Column, Integer, MetaData, PrimaryKeyConstraint,
-                        String, Table, create_engine, select)
+                        String, Table, create_engine)
 from sqlalchemy.orm import declarative_base, sessionmaker
 
-import salesforce
+from src.salesforce_lib.login import login
 
-salesforce_credentials = salesforce.read_config(salesforce.CONFIG_FILE)
-sf : Salesforce = salesforce.login(salesforce_credentials)
+sf : Salesforce = login()
 
 # Load object-to-table mappings from object_mappings.json
 with open('./config/object_mappings.json', 'r') as file:
