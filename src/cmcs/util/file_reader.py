@@ -4,7 +4,7 @@ from typing import Any, Dict
 
 import yaml
 
-from src.util.config import ConfigFiles
+from cmcs.util.config import ConfigFiles
 
 
 # Custom errors

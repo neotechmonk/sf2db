@@ -6,7 +6,7 @@ from sqlalchemy import (Column, Integer, MetaData, PrimaryKeyConstraint,
                         String, Table, create_engine)
 from sqlalchemy.orm import declarative_base, sessionmaker
 
-from src.salesforce_lib.login import login
+from cmcs.salesforce_lib.login import login
 
 sf : Salesforce = login()
 
