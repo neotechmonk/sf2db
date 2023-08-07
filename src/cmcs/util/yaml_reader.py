@@ -29,6 +29,6 @@ def read_yaml(file: str) -> Dict[str, Any]:
 
 # Usage example
 if __name__ == "__main__":
-    from cmcs.util.config import ConfigFiles
+    from .config import ConfigFiles
     yaml_data = read_yaml(file = ConfigFiles.CREDENTIALS)
     print(yaml_data)
