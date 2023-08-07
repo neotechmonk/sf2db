@@ -4,8 +4,6 @@ from typing import Any, Dict
 
 import yaml
 
-from cmcs.util.config import ConfigFiles
-
 
 # Custom errors
 class YAMLFileNotFoundError(Exception):
@@ -29,6 +27,8 @@ def read_yaml(file: str) -> Dict[str, Any]:
         raise YAMLParseError(f"Error parsing the YAML file: {str(e)}")
 
 
+# Usage example
 if __name__ == "__main__":
+    from cmcs.util.config import ConfigFiles
     yaml_data = read_yaml(file = ConfigFiles.CREDENTIALS)
     print(yaml_data)
