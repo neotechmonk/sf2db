@@ -1,13 +1,13 @@
+from sqlalchemy import Column, Integer, MetaData, String
 from sqlalchemy.engine import create_engine
-from sqlalchemy.engine.base import Engine
-from sqlalchemy.exc import OperationalError
-from sqlalchemy.orm import Session, declarative_base, sessionmaker
+from sqlalchemy.orm import sessionmaker
 
-# from .models import Base
-Base = declarative_base()
+from .models import Base
 
-engine: Engine | None = None
-session = sessionmaker()
+# Base = declarative_base()
+
+# engine: Engine | None = None
+# session = sessionmaker()
 
 
 class DBSession:
@@ -20,47 +20,56 @@ class DBSession:
             'mssql+pyodbc://username:password@server_name/db_name?driver=SQL+Server'
         """
         self.db_uri = db_uri
-        self.engine = create_engine(db_uri)
-        Base.metadata.create_all(engine)
-        # self.Session = sessionmaker(bind=self.engine)
+        self.engine = None
+        self.session = None
 
     def __enter__(self):
-        self.session = self.Session()
-        self.session.bind = self.engine
-        # self.session = sessionmaker(bind=self.engine)
+        self.engine = create_engine(self.db_uri)
+        Session = sessionmaker(bind=self.engine)
+        self.session = Session()
         return self.session
 
     def __exit__(self, exc_type, exc_value, traceback):
+        self.session.commit()
         self.session.close()
+        self.engine.dispose()
 
-# Usage example with context manager
+
+
+###
+### SAMPLE Table creation 
+###
+# Base = declarative_base()
+
+# Define the User class representing the 'users' table
+class User(Base):
+    __tablename__ = 'users'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(50))
+    email = Column(String(100))
+
+def create_users_table(db_uri):
+    # Create the engine
+    engine = create_engine(db_uri)
+
+    # Create all tables defined in the metadata, including 'users'
+    Base.metadata.create_all(bind  = engine)
+
+
+    # Usage example with context manager
 if __name__ == '__main__':
-    from sqlalchemy import Column, Integer, MetaData, String
-
-    class User(Base):
-        __tablename__ = 'users'
-        id = Column(Integer, primary_key=True)
-        name = Column(String(50))
-        email = Column(String(100))
-
-
-
-    def create_table_if_not_exists(engine, table):
-        metadata = MetaData()
-        metadata.bind = engine
-        metadata.reflect(bind=engine)
-        if not engine.dialect.has_table(engine, table.__tablename__):
-            Base.metadata.create_all(bind=engine, tables=[table.__table__])
-
-
-    with DBSession('sqlite:///example.db') as session:
-        create_table_if_not_exists(session.get_bind(), User)
+    DB_URI = 'sqlite:///example.db'
+    create_users_table(DB_URI)
+    
+    with DBSession(DB_URI) as session:
+        
         new_user = User(name='John Doe', email='john@example.com')
         session.add(new_user)
         # session.commit()
 
-        # user = session.query(User).filter_by(name='John Doe').first()
-        # print(user.email)
+        user = session.query(User).filter_by(name='John Doe').first()
+        # session.commit()
+        print(f"{user.id}, {user.email}, {user.email}")
 
 
 
