@@ -1,6 +1,6 @@
 [
     {
-        "tablename": "users",
+        "tablename": "Users",
         "columns": [
             {
                 "name": "id",
