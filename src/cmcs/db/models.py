@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from typing import Any
 
-from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()
@@ -19,6 +18,8 @@ class DBTable(Base):
 
 # Example usag
 if __name__ == "__main__":
+    
+    from sqlalchemy import Column, Integer, String
     
     class DBCustomer(DBTable):
         __tablename__ = "customer"
