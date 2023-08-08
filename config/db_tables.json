@@ -1,0 +1,30 @@
+[
+    {
+        "tablename": "users",
+        "columns": [
+            {
+                "name": "id",
+                "type": "Integer",
+                "primary_key": true
+            },
+            {
+                "name": "name",
+                "type": "String",
+                "length": 50
+            },
+            {
+                "name": "email",
+                "type": "String",
+                "length": 100
+            },
+            {
+                "name": "created_at",
+                "type": "DateTime"
+            },
+            {
+                "name": "is_active",
+                "type": "Boolean"
+            }
+        ]
+    }
+]
