@@ -80,44 +80,23 @@ class DBTableDefinition():
     
 
 
-def create_db_table_definition(table_name: str, 
-                               columns: List[tuple[str, str, int, bool]]) -> DBTableDefinition:
-    db_columns = []
-
-    for column_name, column_type, column_length, is_primary_key in columns:
-        
-        column_type_enum = getattr(SQLAlchemyColumnType, column_type)
-        column_definition = DBColumnDefinition(column_name=column_name,
-                                               column_type=column_type_enum,
-                                               column_length=column_length,
-                                               is_primary_key=is_primary_key)
-        db_columns.append(column_definition)
-
-    table_definition = DBTableDefinition(table_name=table_name, columns=db_columns)
-    return table_definition
-
-
-def create_db_table_definitions(definition_file : str) -> List[DBTableDefinition]:
-
+def create_db_table_definitions(definition_file: str) -> List[DBTableDefinition]:
     definition_json = read_json(definition_file)
-    
 
     db_table_definitions = []
     
     for table_def_block in definition_json:
-        table_name = table_def_block["tablename"]
-        columns = []
-
-        for column_def in table_def_block['columns']:
-            column_name = column_def['name']
-            column_type = column_def['type']
-            column_length = column_def.get('length', None)
-            is_primary_key = column_def.get('primary_key', False)
-
-            columns.append((column_name, column_type, column_length, is_primary_key))
-           
-        table_definition = create_db_table_definition(table_name=table_name, columns=columns)
-        # pprint(table_definition)
+        columns = [
+            DBColumnDefinition(
+                column_name=column_def['name'],
+                column_type=getattr(SQLAlchemyColumnType, column_def['type']),
+                column_length=column_def.get('length'),
+                is_primary_key=column_def.get('primary_key', False)
+            )
+            for column_def in table_def_block['columns']
+        ]
+        
+        table_definition = DBTableDefinition(table_name=table_def_block["tablename"], columns=columns)
         db_table_definitions.append(table_definition)
 
     return db_table_definitions
