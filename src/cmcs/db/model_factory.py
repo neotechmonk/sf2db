@@ -1,9 +1,11 @@
+
 import datetime
 from dataclasses import dataclass, field
 from enum import Enum
 from pprint import pprint
 from typing import Any, Callable, List
 
+import sqlalchemy
 from sqlalchemy import Boolean, Column, DateTime, Float, Integer, String
 
 from cmcs.util.config import ConfigFiles
@@ -11,28 +13,6 @@ from cmcs.util.json_reader import read_json
 
 from .models import DBTable, to_dict
 
-
-class SQLAlchemyColumnType(Enum):
-    """Mapping between db_tables.json's column types to SQLAlchemy Column types
-        E.g. 
-        ......
-        {
-                "name": "email",
-                "type": "String",
-                "length": 100
-            },
-        {
-            "name": "created_at",
-            "type": "DateTime"
-        }
-            ....
-    """
-    Integer = Integer
-    String = String
-    Float = Float
-    Boolean = Boolean
-    DateTime = DateTime
-    
 
 @dataclass
 class DBColumnDefinition():
@@ -106,14 +86,14 @@ def create_dynamic_db_table(db_table_definition:DBTableDefinition)-> DBTable:
     
     for column in db_table_definition.columns:
 
-        _col_type = getattr(SQLAlchemyColumnType, column.column_type)
+        _col_type =  getattr(sqlalchemy, column.column_type, None) 
         # SQLAlchemyColumnType.String requires in Column
         
-        if _col_type == SQLAlchemyColumnType.String:
-            class_attrs[column.column_name] = Column(_col_type.value(column.column_length), 
+        if isinstance(_col_type, sqlalchemy.String):
+            class_attrs[column.column_name] = Column(_col_type(column.column_length), 
                                                      primary_key=column.is_primary_key)
         else:
-            class_attrs[column.column_name] = Column(_col_type.value, 
+            class_attrs[column.column_name] = Column(_col_type, 
                                                      primary_key=column.is_primary_key)
 
     dt_table = type(db_table_definition.table_name, (DBTable,), class_attrs)
@@ -137,3 +117,5 @@ if __name__ == '__main__':
         # user = db_table(id = 232,first_name="John", last_name="Doe", email_address="doe@example.com")
         user = db_table(**user_data)
         pprint(to_dict(user))
+    # alchemy_type =  getattr(sqlalchemy, "String", None)
+    # print((alchemy_type))
