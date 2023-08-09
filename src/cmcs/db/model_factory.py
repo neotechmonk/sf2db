@@ -6,12 +6,15 @@ from pprint import pprint
 from typing import Any, Callable, List
 
 import sqlalchemy
-from sqlalchemy import Boolean, Column, DateTime, Float, Integer, String
 
 from cmcs.util.config import ConfigFiles
 from cmcs.util.json_reader import read_json
 
 from .models import DBTable, to_dict
+
+# from sqlalchemy import Boolean, Column, DateTime, Float, Integer, String
+
+
 
 
 @dataclass
@@ -80,20 +83,38 @@ def create_db_table_definitions(table_definition_data: JSONTableDefinition) -> L
     return db_table_definitions
 
 
+class SQLAlchemyTypeError(Exception):
+    """Raised when Column does not match a permitted `sqlalchemy` types."""
+    pass
+
+
+def get_sqlalchemy_type(type_name: str):
+    
+    sqlalchemy_type = getattr(sqlalchemy, type_name, None)
+
+    if sqlalchemy_type is None :
+        raise SQLAlchemyTypeError(f"SQLAlchemy type can not be None")
+    elif  sqlalchemy_type not in [sqlalchemy.String, 
+                                  sqlalchemy.Integer, 
+                                  sqlalchemy.Float, 
+                                  sqlalchemy.Boolean, 
+                                  sqlalchemy.DateTime]:
+        raise SQLAlchemyTypeError(f"SQLAlchemy type '{type_name}' must be one of sqlalchemy.String, sqlalchemy.Integer, sqlalchemy.Float, sqlalchemy.Boolean, sqlalchemy.DateTime")
+
+    return sqlalchemy_type
     
 def create_dynamic_db_table(db_table_definition:DBTableDefinition)-> DBTable:
     class_attrs = {'__tablename__': db_table_definition.table_name}
     
     for column in db_table_definition.columns:
+        sqlalchemy_col_type = get_sqlalchemy_type (type_name = column.column_type ) 
 
-        _col_type =  getattr(sqlalchemy, column.column_type, None) 
         # SQLAlchemyColumnType.String requires in Column
-        
-        if isinstance(_col_type, sqlalchemy.String):
-            class_attrs[column.column_name] = Column(_col_type(column.column_length), 
+        if isinstance(sqlalchemy_col_type, sqlalchemy.String):
+            class_attrs[column.column_name] = sqlalchemy.Column(sqlalchemy_col_type(column.column_length), 
                                                      primary_key=column.is_primary_key)
         else:
-            class_attrs[column.column_name] = Column(_col_type, 
+            class_attrs[column.column_name] = sqlalchemy.Column(sqlalchemy_col_type, 
                                                      primary_key=column.is_primary_key)
 
     dt_table = type(db_table_definition.table_name, (DBTable,), class_attrs)
