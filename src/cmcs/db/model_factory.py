@@ -1,17 +1,15 @@
 import datetime
-from dataclasses import field
+from dataclasses import dataclass, field
 from enum import Enum
 from pprint import pprint
 from typing import Any, Callable, List
 
-from attr import dataclass
 from sqlalchemy import Boolean, Column, DateTime, Float, Integer, String
 
-from cmcs.db.models import DBTable
 from cmcs.util.config import ConfigFiles
 from cmcs.util.json_reader import read_json
 
-from .models import to_dict
+from .models import DBTable, to_dict
 
 
 class SQLAlchemyColumnType(Enum):
@@ -55,13 +53,14 @@ class DBColumnDefinition():
     """
     column_name : str
     column_type:str 
-    is_primary_key : SQLAlchemyColumnType
+    is_primary_key : bool =field(default=False)
     column_length: int = field(default=None)  # Length is only applicable to `sqlalchemy.String`
 
 
 @dataclass
 class DBTableDefinition():  
     """Representation of db_tables.json's table definition
+    Limitation : does not support relationship between tables
     Columns of the tables of type `DBColumnDefinition`
         E.g.
             .....
@@ -80,8 +79,6 @@ class DBTableDefinition():
 
 
 JSONTableDefinition = Callable[[str], List[dict[str, Any]]]
-
-
 def create_db_table_definitions(table_definition_data: JSONTableDefinition) -> List[DBTableDefinition]:
 
     db_table_definitions = []
@@ -90,7 +87,7 @@ def create_db_table_definitions(table_definition_data: JSONTableDefinition) -> L
         columns = [
             DBColumnDefinition(
                 column_name=column_def['name'],
-                column_type=getattr(SQLAlchemyColumnType, column_def['type']),
+                column_type=column_def.get('type'),
                 column_length=column_def.get('length'),
                 is_primary_key=column_def.get('primary_key', False)
             )
@@ -104,20 +101,22 @@ def create_db_table_definitions(table_definition_data: JSONTableDefinition) -> L
 
 
     
-def create_db_table(table_definition:DBTableDefinition)-> DBTable:
-    class_attrs = {
-        '__tablename__': table_definition.table_name
-        }
+def create_dynamic_db_table(db_table_definition:DBTableDefinition)-> DBTable:
+    class_attrs = {'__tablename__': db_table_definition.table_name}
     
-    for column in table_definition.columns:
-        if column.column_type == SQLAlchemyColumnType.String:
-            class_attrs[column.column_name] = Column(column.column_type.value(column.column_length), 
+    for column in db_table_definition.columns:
+
+        _col_type = getattr(SQLAlchemyColumnType, column.column_type)
+        # SQLAlchemyColumnType.String requires in Column
+        
+        if _col_type == SQLAlchemyColumnType.String:
+            class_attrs[column.column_name] = Column(_col_type.value(column.column_length), 
                                                      primary_key=column.is_primary_key)
         else:
-            class_attrs[column.column_name] = Column(column.column_type.value, 
+            class_attrs[column.column_name] = Column(_col_type.value, 
                                                      primary_key=column.is_primary_key)
 
-    dt_table = type(table_definition.table_name, (DBTable,), class_attrs)
+    dt_table = type(db_table_definition.table_name, (DBTable,), class_attrs)
     return dt_table
 
 
@@ -132,7 +131,7 @@ if __name__ == '__main__':
         "created_at": datetime.datetime.now(),
         "is_active": True}
     for definition in table_definitions: 
-        db_table = create_db_table(definition)
+        db_table = create_dynamic_db_table(definition)
         print(type(db_table))
 
         # user = db_table(id = 232,first_name="John", last_name="Doe", email_address="doe@example.com")
