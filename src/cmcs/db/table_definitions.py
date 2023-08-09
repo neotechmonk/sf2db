@@ -2,7 +2,7 @@ import datetime
 from dataclasses import field
 from enum import Enum
 from pprint import pprint
-from typing import List
+from typing import Any, Callable, List
 
 from attr import dataclass
 from sqlalchemy import Boolean, Column, DateTime, Float, Integer, String
@@ -56,7 +56,7 @@ class DBColumnDefinition():
     column_name : str
     column_type:str 
     is_primary_key : SQLAlchemyColumnType
-    column_length: int = field(default=None)  # Length is only applicable to sqlalchemy.String
+    column_length: int = field(default=None)  # Length is only applicable to `sqlalchemy.String`
 
 
 @dataclass
@@ -77,15 +77,16 @@ class DBTableDefinition():
     """
     table_name : str
     columns: list[DBColumnDefinition]
-    
 
 
-def create_db_table_definitions(definition_file: str) -> List[DBTableDefinition]:
-    definition_json = read_json(definition_file)
+JSONTableDefinition = Callable[[str], List[dict[str, Any]]]
+
+
+def create_db_table_definitions(table_definition_data: JSONTableDefinition) -> List[DBTableDefinition]:
 
     db_table_definitions = []
     
-    for table_def_block in definition_json:
+    for table_def_block in table_definition_data:
         columns = [
             DBColumnDefinition(
                 column_name=column_def['name'],
@@ -122,7 +123,7 @@ def create_db_table(table_definition:DBTableDefinition)-> DBTable:
 
 
 if __name__ == '__main__':
-    table_definitions = create_db_table_definitions(definition_file=ConfigFiles.DB_TABLES)
+    table_definitions = create_db_table_definitions(read_json(ConfigFiles.DB_TABLES))
     # print (SQLAlchemyColumnType.Integer.value)
     user_data = {
         "id": 232,
