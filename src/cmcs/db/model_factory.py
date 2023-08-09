@@ -121,7 +121,7 @@ def create_dynamic_db_table(db_table_definition:DBTableDefinition)-> DBTable:
         else:
             class_attrs[column.column_name] = sqlalchemy.Column(sqlalchemy_col_type, 
                                                      primary_key=column.is_primary_key)
-    dt_table = None
+
     dt_table = type(db_table_definition.table_name, (DBTable,), class_attrs)
     return dt_table
 # endregion

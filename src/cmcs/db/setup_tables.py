@@ -1,5 +1,5 @@
 from pprint import pprint
-from typing import Any, Callable, Dict, List
+from typing import Any, Dict, List
 
 from sqlalchemy import create_engine
 from sqlalchemy.exc import InvalidRequestError
@@ -17,15 +17,14 @@ class TableAlreadyExistsError(Exception):
     """Raised when new table is attempted to be created while there is already one in existence."""
     pass
 
-ConfigReader = Callable[[str], Dict[str, Dict[str, Any]]]
+TableDefinitionJSONData =  Dict[str, Dict[str, Any]]
 
-def setup_tables( config_file : str, config_reader: ConfigReader):
-    config_data = config_reader(config_file)
+def setup_tables(db_uri : str, config_data : TableDefinitionJSONData):
     table_definitions :list[DBTableDefinition] = create_db_table_definitions(config_data)
 
     tables : List = []
 
-    engine = create_engine(ConfigFiles.DB_URI)    
+    engine = create_engine(db_uri)    
 
     # Session = sessionmaker(bind=engine)
     # session = Session()
