@@ -11,11 +11,38 @@ from cmcs.util.json_reader import read_json
 
 from .models import DBTable, to_dict
 
-# from sqlalchemy import Boolean, Column, DateTime, Float, Integer, String
+
+# region Utility function => SQLAlchemy Type
+class SQLAlchemyTypeError(Exception):
+    """Raised when Column does not match a permitted `sqlalchemy` types."""
+    pass
 
 
+ALLOWED_SQLALCHEMY_TYPES: Tuple[Type, ...] = (
+                                  sqlalchemy.Integer, 
+                                  sqlalchemy.String, 
+                                  sqlalchemy.Float, 
+                                  sqlalchemy.Boolean, 
+                                  sqlalchemy.DateTime)
 
+def get_sqlalchemy_type(type_name: str)-> ALLOWED_SQLALCHEMY_TYPES:
+    """"""
+    
+    sqlalchemy_type = getattr(sqlalchemy, type_name, None)
+    print (type_name)
+    print (sqlalchemy_type)
 
+    if sqlalchemy_type is None :
+        raise SQLAlchemyTypeError(f"SQLAlchemy type can not be None")
+    elif sqlalchemy_type not in ALLOWED_SQLALCHEMY_TYPES:
+        valid_types = ", ".join([allowed_type.__name__ for allowed_type in ALLOWED_SQLALCHEMY_TYPES])                          
+        raise SQLAlchemyTypeError(f"SQLAlchemy type '{type_name}' must be one of {valid_types}")
+
+    return sqlalchemy_type
+    
+# endregion
+
+# region Dynamic definition of SQL Tables
 @dataclass
 class DBColumnDefinition():
     """Representation of db_tables.json's column definition
@@ -80,34 +107,9 @@ def create_db_table_definitions(table_definition_data: JSONTableDefinition) -> L
         db_table_definitions.append(table_definition)
 
     return db_table_definitions
+# endregion
 
-
-class SQLAlchemyTypeError(Exception):
-    """Raised when Column does not match a permitted `sqlalchemy` types."""
-    pass
-
-
-ALLOWED_SQLALCHEMY_TYPES: Tuple[Type, ...] = (
-                                  sqlalchemy.Integer, 
-                                  sqlalchemy.String, 
-                                  sqlalchemy.Float, 
-                                  sqlalchemy.Boolean, 
-                                  sqlalchemy.DateTime)
-
-def get_sqlalchemy_type(type_name: str)-> ALLOWED_SQLALCHEMY_TYPES:
-    
-    sqlalchemy_type = getattr(sqlalchemy, type_name, None)
-    print (type_name)
-    print (sqlalchemy_type)
-
-    if sqlalchemy_type is None :
-        raise SQLAlchemyTypeError(f"SQLAlchemy type can not be None")
-    elif sqlalchemy_type not in ALLOWED_SQLALCHEMY_TYPES:
-        valid_types = ", ".join([allowed_type.__name__ for allowed_type in ALLOWED_SQLALCHEMY_TYPES])                          
-        raise SQLAlchemyTypeError(f"SQLAlchemy type '{type_name}' must be one of {valid_types}")
-
-    return sqlalchemy_type
-    
+# region Create SQL Tables dynamically based on DBTableDefinition
 def create_dynamic_db_table(db_table_definition:DBTableDefinition)-> DBTable:
     class_attrs = {'__tablename__': db_table_definition.table_name}
     
@@ -124,7 +126,7 @@ def create_dynamic_db_table(db_table_definition:DBTableDefinition)-> DBTable:
 
     dt_table = type(db_table_definition.table_name, (DBTable,), class_attrs)
     return dt_table
-
+# endregion
 
 
 if __name__ == '__main__':
