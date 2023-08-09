@@ -1,13 +1,10 @@
-from sqlalchemy import Column, Integer, MetaData, String
+from sqlalchemy import Column, Integer, String
 from sqlalchemy.engine import create_engine
 from sqlalchemy.orm import sessionmaker
 
+from cmcs.util.config import ConfigFiles
+
 from .models import Base
-
-# Base = declarative_base()
-
-# engine: Engine | None = None
-# session = sessionmaker()
 
 
 class DBSession:
@@ -42,34 +39,34 @@ class DBSession:
 # Base = declarative_base()
 
 # Define the User class representing the 'users' table
-class User(Base):
-    __tablename__ = 'users'
-    id = Column(Integer, primary_key=True)
-    name = Column(String(50))
-    email = Column(String(100))
+# class User(Base):
+#     __tablename__ = 'users'
+#     id = Column(Integer, primary_key=True)
+#     name = Column(String(50))
+#     email = Column(String(100))
 
-def create_users_table(db_uri):
-    # Create the engine
-    engine = create_engine(db_uri)
+# def create_users_table(db_uri):
+#     # Create the engine
+#     engine = create_engine(db_uri)
 
-    # Create all tables defined in the metadata, including 'users'
-    Base.metadata.create_all(bind  = engine)
+#     # Create all tables defined in the metadata, including 'users'
+#     Base.metadata.create_all(bind  = engine)
 
 
     # Usage example with context manager
-if __name__ == '__main__':
-    DB_URI = 'sqlite:///example.db'
-    create_users_table(DB_URI)
+# if __name__ == '__main__':
+#     DB_URI = ConfigFiles.DB_URI
+#     create_users_table(DB_URI)
     
-    with DBSession(DB_URI) as session:
+#     with DBSession(DB_URI) as session:
         
-        new_user = User(name='John Doe', email='john@example.com')
-        session.add(new_user)
-        # session.commit()
+#         new_user = User(name='John Doe', email='john@example.com')
+#         session.add(new_user)
+#         # session.commit()
 
-        user = session.query(User).filter_by(name='John Doe').first()
-        # session.commit()
-        print(f"{user.id}, {user.email}, {user.email}")
+#         user = session.query(User).filter_by(name='John Doe').first()
+#         # session.commit()
+#         print(f"{user.id}, {user.email}, {user.email}")
 
 
 

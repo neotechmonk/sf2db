@@ -121,27 +121,23 @@ def create_dynamic_db_table(db_table_definition:DBTableDefinition)-> DBTable:
         else:
             class_attrs[column.column_name] = sqlalchemy.Column(sqlalchemy_col_type, 
                                                      primary_key=column.is_primary_key)
-
+    dt_table = None
     dt_table = type(db_table_definition.table_name, (DBTable,), class_attrs)
     return dt_table
 # endregion
 
 
-if __name__ == '__main__':
-    table_definitions = create_db_table_definitions(read_json(ConfigFiles.DB_TABLES))
-    # print (SQLAlchemyColumnType.Integer.value)
-    user_data = {
-        "id": 232,
-        "name": "John",
-        "email": "doe@example.com",
-        "created_at": datetime.datetime.now(),
-        "is_active": True}
-    for definition in table_definitions: 
-        db_table = create_dynamic_db_table(definition)
-        print(type(db_table))
-
-        # user = db_table(id = 232,first_name="John", last_name="Doe", email_address="doe@example.com")
-        user = db_table(**user_data)
-        pprint(to_dict(user))
-    # alchemy_type =  getattr(sqlalchemy, "String", None)
-    # print((alchemy_type))
+# if __name__ == '__main__':
+#     table_definitions = create_db_table_definitions(read_json(ConfigFiles.DB_TABLES))
+#     user_data = {
+#         "id": 232,
+#         "name": "John",
+#         "email": "doe@example.com",
+#         "created_at": datetime.datetime.now(),
+#         "is_active": True}
+#     for definition in table_definitions: 
+#         db_table = create_dynamic_db_table(definition)
+#         print(type(db_table))
+#         user = db_table(**user_data)
+#         pprint(to_dict(user))
+    
