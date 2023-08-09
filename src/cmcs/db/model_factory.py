@@ -29,8 +29,6 @@ def get_sqlalchemy_type(type_name: str)-> ALLOWED_SQLALCHEMY_TYPES:
     """"""
     
     sqlalchemy_type = getattr(sqlalchemy, type_name, None)
-    print (type_name)
-    print (sqlalchemy_type)
 
     if sqlalchemy_type is None :
         raise SQLAlchemyTypeError(f"SQLAlchemy type can not be None")
