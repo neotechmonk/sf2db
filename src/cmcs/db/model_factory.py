@@ -1,9 +1,8 @@
 
 import datetime
 from dataclasses import dataclass, field
-from enum import Enum
 from pprint import pprint
-from typing import Any, Callable, List
+from typing import Any, Callable, List, Tuple, Type
 
 import sqlalchemy
 
@@ -88,18 +87,24 @@ class SQLAlchemyTypeError(Exception):
     pass
 
 
-def get_sqlalchemy_type(type_name: str):
+ALLOWED_SQLALCHEMY_TYPES: Tuple[Type, ...] = (
+                                  sqlalchemy.Integer, 
+                                  sqlalchemy.String, 
+                                  sqlalchemy.Float, 
+                                  sqlalchemy.Boolean, 
+                                  sqlalchemy.DateTime)
+
+def get_sqlalchemy_type(type_name: str)-> ALLOWED_SQLALCHEMY_TYPES:
     
     sqlalchemy_type = getattr(sqlalchemy, type_name, None)
+    print (type_name)
+    print (sqlalchemy_type)
 
     if sqlalchemy_type is None :
         raise SQLAlchemyTypeError(f"SQLAlchemy type can not be None")
-    elif  sqlalchemy_type not in [sqlalchemy.String, 
-                                  sqlalchemy.Integer, 
-                                  sqlalchemy.Float, 
-                                  sqlalchemy.Boolean, 
-                                  sqlalchemy.DateTime]:
-        raise SQLAlchemyTypeError(f"SQLAlchemy type '{type_name}' must be one of sqlalchemy.String, sqlalchemy.Integer, sqlalchemy.Float, sqlalchemy.Boolean, sqlalchemy.DateTime")
+    elif sqlalchemy_type not in ALLOWED_SQLALCHEMY_TYPES:
+        valid_types = ", ".join([allowed_type.__name__ for allowed_type in ALLOWED_SQLALCHEMY_TYPES])                          
+        raise SQLAlchemyTypeError(f"SQLAlchemy type '{type_name}' must be one of {valid_types}")
 
     return sqlalchemy_type
     
