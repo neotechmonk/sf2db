@@ -22,6 +22,9 @@ class DBSession:
 
     def __enter__(self):
         self.engine = create_engine(self.db_uri)
+
+        Base.metadata.create_all(bind=self.engine)
+        
         Session = sessionmaker(bind=self.engine)
         self.session = Session()
         return self.session

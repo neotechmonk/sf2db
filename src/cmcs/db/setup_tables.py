@@ -25,9 +25,6 @@ def setup_tables(db_uri : str, config_data : TableDefinitionJSONData):
     tables : List = []
 
     engine = create_engine(db_uri)    
-
-    # Session = sessionmaker(bind=engine)
-    # session = Session()
     for definition in table_definitions:
         db_table = create_dynamic_db_table(definition)
         tables.append(db_table)
@@ -39,7 +36,6 @@ def setup_tables(db_uri : str, config_data : TableDefinitionJSONData):
             Base.metadata.clear()
        
 
-    # session.close()
     
 
 # if __name__ == "__main__":

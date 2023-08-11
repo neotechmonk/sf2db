@@ -28,10 +28,7 @@ def define_table_by_name(desired_table_name: str,
     table_definitions = create_db_table_definitions(table_def_json_data)
     for table_definition in table_definitions:
         if table_definition.table_name == desired_table_name:
-            db_table_class = None
-            db_table_class = create_dynamic_db_table(table_definition)
-            print(db_table_class)
-            return db_table_class
+            return create_dynamic_db_table(table_definition)
     else:
         print(f"Table definition for {desired_table_name} not found.")
 
@@ -89,11 +86,11 @@ if __name__ == "__main__":
 
     DB_URI=ConfigFiles.DB_URI
     #Delete the SQL Lite .DB file
-    delete_sqlite_db(DB_URI)
+    # delete_sqlite_db(DB_URI)
 
-    # Setup database tables
-    setup_db_tables(db_uri=DB_URI, 
-                    table_def_json_data=table_definition_json )
+    # Setup database tables - no need to separately do this as SQL Alchmey takes care of this automatically
+    # setup_db_tables(db_uri=DB_URI, 
+    #                 table_def_json_data=table_definition_json )
 
     # Dynamically define the table class to interact with
     user_table  = define_table_by_name(desired_table_name="Users",
