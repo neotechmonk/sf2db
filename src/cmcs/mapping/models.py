@@ -1,7 +1,4 @@
 
-
-import json
-from pprint import pprint
 from typing import Any, Dict, List
 
 from pydantic import BaseModel
@@ -67,6 +64,9 @@ def mapping_factory(mapping: MappingData) -> TableMapping:
 
 
 if __name__ == "__main__":
+    import json
+    from pprint import pprint
+
     json_string = """
     [
       {
@@ -78,6 +78,14 @@ if __name__ == "__main__":
               "PersonEmail": "EMAIL",
               "IsDeleted": "ID_DELETED",
               "CreatedDate": "DATE_CREATED"
+          }
+      },
+      {
+          "salesforce-object":"Contact",
+          "db-table": "PHONE",
+          "column-mapping": {
+              "Id": "ID",
+              "Phone": "PHONE"
           }
       }
     ]
