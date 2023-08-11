@@ -12,11 +12,11 @@ from datetime import datetime
 from pprint import pprint
 from typing import Any, Dict
 
-from cmcs.db.engine import DBSession
 from cmcs.db.model_factory import (DBTableDefinition,
                                    create_db_table_definitions,
                                    create_dynamic_db_table)
 from cmcs.db.models import DBTable, to_dict
+from cmcs.db.session import DBSession
 from cmcs.db.setup_tables import (TableAlreadyExistsError,
                                   TableDefinitionJSONData, setup_tables)
 from cmcs.util.config import ConfigFiles
