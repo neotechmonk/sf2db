@@ -30,10 +30,14 @@ class DBSession:
         return self.session
 
     def __exit__(self, exc_type, exc_value, traceback):
-        self.session.commit()
-        self.session.close()
-        self.engine.dispose()
-
+            try:
+                if exc_type is None:
+                    self.session.commit()
+                else:
+                    self.session.rollback()
+            finally:
+                self.session.close()
+                self.engine.dispose()
 
 
 ###
