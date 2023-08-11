@@ -26,5 +26,20 @@
                 "type": "Boolean"
             }
         ]
+    },
+    {
+        "tablename": "Phone",
+        "columns": [
+            {
+                "name": "id",
+                "type": "Integer",
+                "primary_key": true
+            },
+            {
+                "name": "number",
+                "type": "String",
+                "length": 50
+            }
+        ]
     }
 ]

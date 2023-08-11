@@ -16,18 +16,18 @@ class DBTable(Base):
     __tablename__ = ""
     
 
-# Example usag
-if __name__ == "__main__":
+# Example usage
+# if __name__ == "__main__":
     
-    from sqlalchemy import Column, Integer, String
+#     from sqlalchemy import Column, Integer, String
     
-    class DBCustomer(DBTable):
-        __tablename__ = "customer"
-        id = Column(Integer, primary_key=True, autoincrement=True)
-        first_name = Column(String(250), nullable=False)
-        last_name = Column(String(250), nullable=False)
-        email_address = Column(String(250), nullable=False)
+#     class DBCustomer(DBTable):
+#         __tablename__ = "customer"
+#         id = Column(Integer, primary_key=True, autoincrement=True)
+#         first_name = Column(String(250), nullable=False)
+#         last_name = Column(String(250), nullable=False)
+#         email_address = Column(String(250), nullable=False)
     
-    dbcustomer = DBCustomer(id = 232,first_name="John", last_name="Doe", email_address="doe@example.com")
+#     dbcustomer = DBCustomer(id = 232,first_name="John", last_name="Doe", email_address="doe@example.com")
 
-    print (to_dict(dbcustomer))
+#     print (to_dict(dbcustomer))
