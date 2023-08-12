@@ -17,7 +17,7 @@ def get_credentials(data : Dict[str, str]) -> SalesforceCredentials:
 
 class SimpleSalesforceAdapter:
 
-    def __init__(self, credential_data):
+    def __init__(self, credential_data: Dict[str, str]):
         self.connection = None
         self.credentials = get_credentials(credential_data)
 

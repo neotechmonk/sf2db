@@ -29,18 +29,23 @@ class App:
                  path_sf_credentials: str,
                  path_sf2db_mappings: str,
                  path_db_table_def: str,
-                 path_db_uri: str
+                 path_db_uri: str,
+                 salesforce_client_adapter : SFInterface
                  ) -> None:
         self._path_sf_credentials = path_sf_credentials
         self._path_sf2db_mappings = path_sf2db_mappings
         self._path_db_table_def = path_db_table_def
         self._path_db_uri = path_db_uri
 
+        self._sf_adapter = salesforce_client_adapter
+
         self.db_session = DBSession(db_uri=self._path_db_uri)
+        self.sf_client :SFInterface = None
 
         # Placehodlers of configs
         self.sf2db_mappings : List [TableMapping]
         self.db_tables : List[DBTable]
+
 
     def _load_sf2db_mappings(self):
         _config_data = json_reader.read_json(self._path_sf2db_mappings)
@@ -48,14 +53,18 @@ class App:
 
     def _generate_db_tables(self):
         _config_data = json_reader.read_json(self._path_db_table_def)
-        _db_table_factory = lambda definition_config: generate_db_table(db_table_definition=generate_db_table_definition(definition_config))
+        db_factory_fn = lambda definition_config: generate_db_table(db_table_definition=generate_db_table_definition(definition_config))
+        self.db_tables = [db_factory_fn (definition_config=_t_def) for _t_def in _config_data]
 
-        # _db_table_defs :List [DBTableDefinition] = [generate_db_table_definition(definition_config= _cd) for _cd in _config_data]
-        self.db_tables = [_db_table_factory (definition_config=_t_def) for _t_def in _config_data]
+    def _create_salesforce_client(self):
+        _credential_data = yaml_reader.read_yaml(self._path_sf_credentials)
+        self.sf_client = self._sf_adapter(_credential_data)
+        self.sf_client.login()
 
     def run(self):
        self._load_sf2db_mappings()
        self._generate_db_tables()
+       self._create_salesforce_client()
 
 JSONConfig = Callable[[str], Dict[str, Dict[str, str]]]
 Sf2DB_MappingFactoryFn = Callable[[JSONConfig], TableMapping]
@@ -114,11 +123,13 @@ if __name__ == "__main__":
     SF2DB_MAPPINGS = ConfigFiles.SF2DB_MAPPINGS
     DB_TABLE_DEFINITIONS = ConfigFiles.DB_TABLES
     DR_URI = ConfigFiles.DB_URI
+    SALESFORCE_CLIENT_ADAPTER = SFAdapters.SimpleSalesforceAdapter
 
     app = App(path_db_table_def=DB_TABLE_DEFINITIONS, 
               path_db_uri=DR_URI, 
               path_sf_credentials=SF_CREDENTIALS, 
-              path_sf2db_mappings=SF2DB_MAPPINGS)
+              path_sf2db_mappings=SF2DB_MAPPINGS,
+              salesforce_client_adapter=SALESFORCE_CLIENT_ADAPTER)
     
     app.run()
-    print(app.db_tables)
+    print(app.sf_client.connection.session_id)
