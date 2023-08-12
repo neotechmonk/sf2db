@@ -63,12 +63,10 @@ if __name__ == "__main__":
         with DBSession(db_uri=config.ConfigFiles.DB_URI) as db_session: 
             for record in query_result:
                 # Filter out the 'attributes' key from the record dictionary
-                filtered_record = {field: value for field, value in record.items() if field != 'attributes'}
-                print(filtered_record)
-                dummy_date_created = datetime(2023, 8, 1, 1, 50, 5, tzinfo=timezone.utc)
-                # filtered_record["CreatedDate"] = dummy_date_created
+                # filtered_record = {field: value for field, value in record.items() if field != 'attributes'}
+                print(record)
                 
-                db_data = convert(sf_data=filtered_record, 
+                db_data = convert(sf_data=record, 
                                   salesforce_fields=[sf_fields.saleforce_field for sf_fields in sf2db_mapping.col_mappings],
                                   db_columns=[db_columns.db_column_name for db_columns in sf2db_mapping.col_mappings])
                 

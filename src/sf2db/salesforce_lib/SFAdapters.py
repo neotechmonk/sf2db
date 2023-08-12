@@ -42,4 +42,18 @@ class SimpleSalesforceAdapter:
         if not self.connection:
             raise SalesforceAuthententicationError("You need to login before querying")
         response = self.connection.query_all(query=socl_query_str)
-        return response.get("records", [])
+
+        records = response.get("records", [])
+
+        # Filter out the 'attributes' key from each record
+        # `attributes` key describes the ObjectName
+        filtered_response = [
+            {field: value for field, value in record.items() if field != 'attributes'}
+            for record in records
+            ]
+        
+        return filtered_response
+    
+    
+
+        {field: value for field, value in record.items() if field != 'attributes'}
