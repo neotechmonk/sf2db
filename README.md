@@ -69,6 +69,14 @@ The primary adapter can be change to another package or custom implementation so
 - [ ] Utility to verify configurations
 - [ ] Decoupling of SQL Alchemy as ORM package via Abstraction/Interfaces
 
+## Examples
+__db_tables.json__
+Defines the relational DB structure 
+Sample file in `config/db_tables.json`
+
+Columns only support `name`, `type`, and `primary_key` as json attributes
+`type` is one of [SQLAlchemy Types](https://docs.sqlalchemy.org/en/20/core/types.html)
+Permitted types are in `src/sf2db/db/model_factory.py`'s ALLOWED_SQLALCHEMY_TYPES Enum`
 ## Contributing
 
  You can contribute in various ways, including reporting issues, suggesting improvements, and submitting pull requests.
