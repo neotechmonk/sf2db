@@ -63,11 +63,11 @@ __Salesforce API__
 The primary adapter can be change to another package or custom implementation so long as it is adheres to the contract of `src.sf2db.salesforce.SFInterface` Protocol class
 
 ## Future developments
-[ ] Logging 
-[ ] Unit testing
-[ ] Success / Failutre notification to various targets
-[ ] Utility to verify configurations
-[ ] Decoupling of SQL Alchemy as ORM package via Abstraction/Interfaces
+- [ ] Logging 
+- [ ] Unit testing
+- [ ] Success / Failutre notification to various targets
+- [ ] Utility to verify configurations
+- [ ] Decoupling of SQL Alchemy as ORM package via Abstraction/Interfaces
 
 ## Contributing
 
