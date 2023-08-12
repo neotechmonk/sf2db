@@ -7,9 +7,9 @@ from sf2db.db.models import DBTable
 from sf2db.db.session import DBSession
 from sf2db.mapping.model_factory import mapping_factory
 from sf2db.mapping.models import TableMapping
-from sf2db.mapping.sf_to_db_converter import convert
-from sf2db.salesforce_lib import SFInterface, soql
+from sf2db.salesforce import SFInterface, soql
 from sf2db.util import json_reader, yaml_reader
+from sf2db.util.sf_to_db_converter import convert
 
 
 class App:
@@ -24,6 +24,7 @@ class App:
         self._path_sf2db_mappings = path_sf2db_mappings
         self._path_db_table_def = path_db_table_def
         self._path_db_uri = path_db_uri
+
 
         self._sf_adapter = salesforce_client_adapter
 

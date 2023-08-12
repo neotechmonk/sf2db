@@ -3,9 +3,10 @@ from typing import Dict, List
 from simple_salesforce import Salesforce
 from simple_salesforce.exceptions import SalesforceAuthenticationFailed
 
-from sf2db.salesforce_lib.SFInterface import (
-    SalesforceAuthententicationError, SalesforceCredentialConfigValueError,
-    SalesforceCredentials, SalesforceQueryResult)
+from sf2db.salesforce.SFInterface import (SalesforceAuthententicationError,
+                                          SalesforceCredentialConfigValueError,
+                                          SalesforceCredentials,
+                                          SalesforceQueryResult)
 
 
 def get_credentials(data : Dict[str, str]) -> SalesforceCredentials:
