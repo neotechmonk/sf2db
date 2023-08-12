@@ -5,23 +5,55 @@
     4. Get data from SF
     5. Wrte data to DB
 """
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from pprint import pprint
 from typing import Callable, Dict, List
 
-from sf2db.db.model_factory import (generate_db_table,
+from sf2db.db.model_factory import (DBTableDefinition, generate_db_table,
                                     generate_db_table_definition)
 from sf2db.db.models import DBTable
 from sf2db.db.session import DBSession
-from sf2db.db.test import USER_DATA
 from sf2db.mapping.model_factory import mapping_factory
 from sf2db.mapping.models import TableMapping
 from sf2db.mapping.sf_to_db_converter import convert
 from sf2db.salesforce_lib import SFAdapters, SFInterface, soql
 from sf2db.util import config, json_reader, yaml_reader
+from sf2db.util.config import ConfigFiles
 
 # from sf2db.salesforce_lib.SimpleSalesforceAdapter 
 
+
+class App:
+    def __init__(self,
+                 path_sf_credentials: str,
+                 path_sf2db_mappings: str,
+                 path_db_table_def: str,
+                 path_db_uri: str
+                 ) -> None:
+        self._path_sf_credentials = path_sf_credentials
+        self._path_sf2db_mappings = path_sf2db_mappings
+        self._path_db_table_def = path_db_table_def
+        self._path_db_uri = path_db_uri
+
+        self.db_session = DBSession(db_uri=self._path_db_uri)
+
+        # Placehodlers of configs
+        self.sf2db_mappings : List [TableMapping]
+        self.db_tables : List[DBTable]
+
+    def _load_sf2db_mappings(self):
+        _config_data = json_reader.read_json(self._path_sf2db_mappings)
+        self.sf2db_mappings = [mapping_factory (mapping = _cd) for _cd in _config_data]
+
+    def _generate_db_tables(self):
+        _config_data = json_reader.read_json(self._path_db_table_def)
+        _db_table_defs :List [DBTableDefinition] = [generate_db_table_definition(definition_config= _cd) for _cd in _config_data]
+        self.db_tables = [generate_db_table (db_table_definition=_t_def) for _t_def in _db_table_defs]
+
+    def run(self):
+       self._load_sf2db_mappings()
+       self._generate_db_tables()
 
 JSONConfig = Callable[[str], Dict[str, Dict[str, str]]]
 Sf2DB_MappingFactoryFn = Callable[[JSONConfig], TableMapping]
@@ -35,7 +67,8 @@ def read_sf_2_db_mapping(mapping_configs : List[JSONConfig],
 db_table_factory = lambda definition_config: generate_db_table(db_table_definition=generate_db_table_definition(definition_config))
 
 
-if __name__ == "__main__":
+def func_main():
+
     mapping_configs : List [JSONConfig] = json_reader.read_json(config.ConfigFiles.SF2DB_MAPPINGS)
     # print(mapping_configs)
     db_tables_configs :List[JSONConfig] = json_reader.read_json(config.ConfigFiles.DB_TABLES)
@@ -74,3 +107,17 @@ if __name__ == "__main__":
                 print(db_data)
                 db_record = db_table(**db_data)
                 db_session.add(db_record)
+
+if __name__ == "__main__":
+    SF_CREDENTIALS = ConfigFiles.CREDENTIALS
+    SF2DB_MAPPINGS = ConfigFiles.SF2DB_MAPPINGS
+    DB_TABLE_DEFINITIONS = ConfigFiles.DB_TABLES
+    DR_URI = ConfigFiles.DB_URI
+
+    app = App(path_db_table_def=DB_TABLE_DEFINITIONS, 
+              path_db_uri=DR_URI, 
+              path_sf_credentials=SF_CREDENTIALS, 
+              path_sf2db_mappings=SF2DB_MAPPINGS)
+    
+    app.run()
+    print(app.db_tables)
