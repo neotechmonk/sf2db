@@ -10,7 +10,8 @@ from sf2db.mapping.models import TableMapping
 from sf2db.mapping.sf_to_db_converter import convert
 from sf2db.salesforce_lib import SFAdapters, SFInterface, soql
 from sf2db.util import json_reader, yaml_reader
-from sf2db.util.config import ConfigFiles
+
+from .config import ConfigFiles
 
 
 class App:
