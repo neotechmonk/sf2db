@@ -48,8 +48,10 @@ class App:
 
     def _generate_db_tables(self):
         _config_data = json_reader.read_json(self._path_db_table_def)
-        _db_table_defs :List [DBTableDefinition] = [generate_db_table_definition(definition_config= _cd) for _cd in _config_data]
-        self.db_tables = [generate_db_table (db_table_definition=_t_def) for _t_def in _db_table_defs]
+        _db_table_factory = lambda definition_config: generate_db_table(db_table_definition=generate_db_table_definition(definition_config))
+
+        # _db_table_defs :List [DBTableDefinition] = [generate_db_table_definition(definition_config= _cd) for _cd in _config_data]
+        self.db_tables = [_db_table_factory (definition_config=_t_def) for _t_def in _config_data]
 
     def run(self):
        self._load_sf2db_mappings()
@@ -64,7 +66,6 @@ def read_sf_2_db_mapping(mapping_configs : List[JSONConfig],
     mappings : List[TableMapping] = [factory_fn(mapping) for mapping in mapping_configs]
     return mappings
 
-db_table_factory = lambda definition_config: generate_db_table(db_table_definition=generate_db_table_definition(definition_config))
 
 
 def func_main():
