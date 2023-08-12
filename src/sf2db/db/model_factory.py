@@ -1,20 +1,15 @@
 
-import datetime
 from dataclasses import dataclass, field
-from pprint import pprint
 from typing import Any, Callable, List, Tuple, Type
 
 import sqlalchemy
 
-from cmcs.util.config import ConfigFiles
-from cmcs.util.json_reader import read_json
-
-from .models import DBTable, to_dict
+from .models import DBTable
 
 
 # region Utility function => SQLAlchemy Type
 class SQLAlchemyTypeError(Exception):
-    """Raised when Column does not match a permitted `sqlalchemy` types."""
+    """Raised when Column does not match a permitted `sqlalchemy` type."""
     pass
 
 
@@ -128,6 +123,9 @@ def create_dynamic_db_table(db_table_definition:DBTableDefinition)-> DBTable:
 
 
 # if __name__ == '__main__':
+
+    # from sf2db.util.config import ConfigFiles
+    # from sf2db.util.json_reader import read_json
 #     table_definitions = create_db_table_definitions(read_json(ConfigFiles.DB_TABLES))
 #     user_data = {
 #         "id": 232,
