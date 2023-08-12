@@ -1,42 +1,7 @@
 
-from typing import Any, Dict, List
+from typing import Dict
 
-from pydantic import BaseModel
-from pydantic.functional_validators import AfterValidator
-from typing_extensions import Annotated
-
-
-class NoStringAttributeValidationError(Exception):
-    """Raised when new table is attempted to be created while there is already one in existence."""
-    pass
-
-class EmptyListValidationError(Exception):
-    """Raised when new table is attempted to be created while there is already one in existence."""
-    pass
-
-def string_attribute_validator(name: Any) -> str:
-    if not all([isinstance(name, str), name is not None, name != ""]):
-        raise NoStringAttributeValidationError(f"Field must be a non-empty string. Value provided => {name if name else '<empty>'}")
-    return name
-
-def list_of_columns_validator(cols :List[Any]) -> str:
-    if not cols:
-        raise EmptyListValidationError(f"At least one field to column mapping must be specified")
-    return cols
-
-
-String_Attr = Annotated[Any, AfterValidator(string_attribute_validator)]
-
-class ColumnMapping(BaseModel):
-    saleforce_field: String_Attr
-    db_column_name: String_Attr
-
-
-class TableMapping(BaseModel):
-    salesforce_object_name: String_Attr
-    db_table_name: String_Attr
-    col_mappings: Annotated[List[ColumnMapping], AfterValidator(list_of_columns_validator)]
-
+from sf2db.mapping.models import ColumnMapping, TableMapping
 
 MappingData = Dict[str, Dict[str, str]]
 
@@ -96,3 +61,20 @@ if __name__ == "__main__":
         table_mapping = mapping_factory(mapping)
         pprint(table_mapping)
         table_mappings.append(table_mapping)
+
+    """ OUTPUT
+        TableMapping(salesforce_object_name='Account', 
+                db_table_name='User', 
+                col_mappings=[
+                    ColumnMapping(saleforce_field='Id', db_column_name='ID'),
+                    ColumnMapping(saleforce_field='Name', db_column_name='NAME'),
+                    ColumnMapping(saleforce_field='PersonEmail', db_column_name='EMAIL'),
+                    ColumnMapping(saleforce_field='IsDeleted', db_column_name='ID_DELETED'),
+                    ColumnMapping(saleforce_field='CreatedDate', db_column_name='DATE_CREATED'])
+                    
+        TableMapping(salesforce_object_name='Contact', 
+                db_table_name='PHONE', 
+                col_mappings=[
+                    ColumnMapping(saleforce_field='Id', db_column_name='ID'),
+                    ColumnMapping(saleforce_field='Phone', db_column_name='PHONE')])
+    """
