@@ -49,6 +49,45 @@ def delete_sqlite_db(db_file:str):
         print(f"Database file '{stripped_path}' does not exist.")
 
 
+# # User data to be added to the table
+USER_DATA = [
+    {
+        "Id": "232",
+        "Name": "John",
+        "PersonEmail": None,
+        "CreatedDate": "2023-08-01T12:00:00",
+        "IsDeleted": True
+    },
+    {
+        "Id": "233",
+        "Name": "Jane",
+        "PersonEmail": "jane@example.com",
+        "CreatedDate": "2023-08-02T10:30:00",
+        "IsDeleted": False
+    },
+    {
+        "Id": "234",
+        "Name": "Alice",
+        "PersonEmail": "alice@example.com",
+        "CreatedDate": "2023-07-30T15:15:00",
+        "IsDeleted": True
+    },
+    {
+        "Id": "235",
+        "Name": "Bob",
+        "PersonEmail": "bob@example.com",
+        "CreatedDate": "2023-07-28T08:45:00",
+        "IsDeleted": False
+    },
+    {
+        "Id": "236",
+        "Name": "Eve",
+        "PersonEmail": "eve@example.com",
+        "CreatedDate": "2023-08-03T14:00:00",
+        "IsDeleted": True
+    }
+]
+
 
 if __name__ == "__main__":
     # table_definition_config_file = ConfigFiles.DB_TABLES
@@ -94,46 +133,6 @@ if __name__ == "__main__":
     # Dynamically define the table class to interact with
     user_table  = define_table_by_name(desired_table_name="Users",
                                        table_def_json_data=table_definition_json)
-
-    # # User data to be added to the table
-    USER_DATA = [
-
-        {
-            "id": 232,
-            "name": "John",
-            "email": "doe@example.com",
-            "created_at": "2023-08-01T12:00:00",
-            "is_active": True
-        },
-        {
-            "id": 233,
-            "name": "Jane",
-            "email": "jane@example.com",
-            "created_at": "2023-08-02T10:30:00",
-            "is_active": False
-        },
-        {
-            "id": 234,
-            "name": "Alice",
-            "email": "alice@example.com",
-            "created_at": "2023-07-30T15:15:00",
-            "is_active": True
-        },
-        {
-            "id": 235,
-            "name": "Bob",
-            "email": "bob@example.com",
-            "created_at": "2023-07-28T08:45:00",
-            "is_active": False
-        },
-        {
-            "id": 236,
-            "name": "Eve",
-            "email": "eve@example.com",
-            "created_at": "2023-08-03T14:00:00",
-            "is_active": True
-        }
-    ]
 
     with DBSession(DB_URI) as insert_session:
         for user_data in USER_DATA:

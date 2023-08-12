@@ -1,11 +1,12 @@
 from pprint import pprint
 from typing import Any, Dict, List
 
-from cmcs.util.config import ConfigFiles
-from cmcs.util.json_reader import read_json
 from sqlalchemy import create_engine
 from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy.orm import sessionmaker
+
+from sf2db.util.config import ConfigFiles
+from sf2db.util.json_reader import read_json
 
 from .model_factory import (DBTableDefinition, generate_db_table,
                             generate_db_table_definition)
