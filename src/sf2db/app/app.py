@@ -116,9 +116,6 @@ class App:
             self._persist_salesforce_to_db(mapping = mapping)
 
 
-
-
-
 if __name__ == "__main__":
     SF_CREDENTIALS = ConfigFiles.CREDENTIALS
     SF2DB_MAPPINGS = ConfigFiles.SF2DB_MAPPINGS
@@ -133,4 +130,3 @@ if __name__ == "__main__":
               salesforce_client_adapter=SALESFORCE_CLIENT_ADAPTER)
     
     app.run()
-    print(app.sf_client.connection.session_id)

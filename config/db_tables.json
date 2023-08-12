@@ -1,28 +1,29 @@
 [
     {
-        "tablename": "Users",
+        "tablename": "User",
         "columns": [
             {
-                "name": "id",
-                "type": "Integer",
+                "name": "ID",
+                "type": "String",
+                "length": 100,
                 "primary_key": true
             },
             {
-                "name": "name",
+                "name": "NAME",
                 "type": "String",
                 "length": 50
             },
             {
-                "name": "email",
+                "name": "EMAIL",
                 "type": "String",
                 "length": 100
             },
             {
-                "name": "created_at",
+                "name": "DATE_CREATED",
                 "type": "DateTime"
             },
             {
-                "name": "is_active",
+                "name": "ID_DELETED",
                 "type": "Boolean"
             }
         ]

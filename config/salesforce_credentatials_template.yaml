@@ -1,5 +1,5 @@
 # Configuration file for Salesforce credentials
-# Rename to login.yaml to productionise and change the below configs
+# Rename to salesforce_credentatials.yaml to productionise and change the below configs
 
 #User credentials
 username: your_salesforce_username
@@ -9,4 +9,4 @@ security_token: your_security_token
 #Connected App OAuthuth credentials
 consumer_key: your_consumer_key
 consumer_secret: your_consumer_secret
-is_prod: false #UAT/DEV =  false, PROD = true
+domain: "test" #UAT/DEV =  test, PROD = login
