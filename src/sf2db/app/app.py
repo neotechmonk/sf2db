@@ -1,16 +1,7 @@
-"""
-    1. Read the sf to db config
-    2. Check if the DB config matches
-    3. Construct SOQL
-    4. Get data from SF
-    5. Wrte data to DB
-"""
-from dataclasses import dataclass
-from datetime import datetime, timezone
-from pprint import pprint
-from typing import Callable, Dict, List
 
-from sf2db.db.model_factory import (DBTableDefinition, generate_db_table,
+from typing import List
+
+from sf2db.db.model_factory import (generate_db_table,
                                     generate_db_table_definition)
 from sf2db.db.models import DBTable
 from sf2db.db.session import DBSession
@@ -18,10 +9,8 @@ from sf2db.mapping.model_factory import mapping_factory
 from sf2db.mapping.models import TableMapping
 from sf2db.mapping.sf_to_db_converter import convert
 from sf2db.salesforce_lib import SFAdapters, SFInterface, soql
-from sf2db.util import config, json_reader, yaml_reader
+from sf2db.util import json_reader, yaml_reader
 from sf2db.util.config import ConfigFiles
-
-# from sf2db.salesforce_lib.SimpleSalesforceAdapter 
 
 
 class App:
@@ -48,75 +37,86 @@ class App:
 
 
     def _load_sf2db_mappings(self):
+        """ Saves all mappings of Salesforce objects to DB Tables from `salesforce_to_db.json` """
         _config_data = json_reader.read_json(self._path_sf2db_mappings)
         self.sf2db_mappings = [mapping_factory (mapping = _cd) for _cd in _config_data]
 
     def _generate_db_tables(self):
+        """ Generates SQLAlchemy.Base classes based on definitions in `salesforce_to_db.json`"""
         _config_data = json_reader.read_json(self._path_db_table_def)
         db_factory_fn = lambda definition_config: generate_db_table(db_table_definition=generate_db_table_definition(definition_config))
         self.db_tables = [db_factory_fn (definition_config=_t_def) for _t_def in _config_data]
 
-    def _create_salesforce_client(self):
+    def _create_salesforce_connection(self):
+        """ Logins to Salesforce using client adapter `self._sf_adapter`.
+            `self._sf_adapter` confines to `SFInterface`
+        """
         _credential_data = yaml_reader.read_yaml(self._path_sf_credentials)
         self.sf_client = self._sf_adapter(_credential_data)
         self.sf_client.login()
+    
+    def _persist_salesforce_to_db(self, mapping: TableMapping) -> None:
+        """ Main function that downloads data for given `TableMapping` entry 
+            in `salesforce_to_db.json`and saves in the database
+
+            Key functions include:
+
+            1. Creating the SOQL query string
+            2. Fetching the data from Salesforce
+            3. Coverting Salesforce results to be compatible with DBTable 
+            4. Bulk inserts
+        """
+        # Extract field/column names
+        _sf_object_fields = [sf_fields.saleforce_field for sf_fields in mapping.col_mappings]
+        _db_table_columns =[db_columns.db_column_name for db_columns in mapping.col_mappings]
+
+        # Find the matching DB table
+        db_table: DBTable = next(
+                            (dbt for dbt in self.db_tables 
+                                  if dbt.__tablename__ == mapping.db_table_name), 
+                                  None) 
+        # Build SOQL query
+        # TODO : make it a helper function of TableMapping ?
+        soql_query = soql.build_soql_query(
+            object_name=mapping.salesforce_object_name,
+            columns=_sf_object_fields)
+        
+        # Fetch Salesforce results
+        sf_results = self.sf_client.query(soql_query)
+
+        # Prepare records for DB insertion
+        db_records = [
+        db_table(**convert(
+            sf_data=record,
+            salesforce_fields=_sf_object_fields,
+            db_columns=_db_table_columns
+        ))
+        for record in sf_results]
+
+        # Bulk insert records into the database
+        with self.db_session as db_session:
+            db_session.add_all(db_records)
+     
 
     def run(self):
-       self._load_sf2db_mappings()
-       self._generate_db_tables()
-       self._create_salesforce_client()
+        """Run the data synchronization process.
 
-JSONConfig = Callable[[str], Dict[str, Dict[str, str]]]
-Sf2DB_MappingFactoryFn = Callable[[JSONConfig], TableMapping]
+            This method orchestrates the process of synchronizing data from Salesforce to the database.
+            It loads mapping configurations, generates database tables, creates a Salesforce client,
+            and then iterates through each mapping to persist data.
 
-def read_sf_2_db_mapping(mapping_configs : List[JSONConfig], 
-                         factory_fn : Sf2DB_MappingFactoryFn)->List[TableMapping]:
-    
-    mappings : List[TableMapping] = [factory_fn(mapping) for mapping in mapping_configs]
-    return mappings
+            This method encapsulates the complete data synchronization process.
+        """
+        self._load_sf2db_mappings()
+        self._generate_db_tables()
+        self._create_salesforce_connection()
 
-
-
-def func_main():
-
-    mapping_configs : List [JSONConfig] = json_reader.read_json(config.ConfigFiles.SF2DB_MAPPINGS)
-    # print(mapping_configs)
-    db_tables_configs :List[JSONConfig] = json_reader.read_json(config.ConfigFiles.DB_TABLES)
-    # print(db_tables_configs)
+        for mapping in self.sf2db_mappings:
+            self._persist_salesforce_to_db(mapping = mapping)
 
 
-    # print(salesforce_credentials)
-    mappings = read_sf_2_db_mapping(mapping_configs = mapping_configs, factory_fn = mapping_factory)
 
-    salesforce_credentials  = yaml_reader.read_yaml(config.ConfigFiles.CREDENTIALS)
-    sales_force_client : SFInterface.SFInterface = SFAdapters.SimpleSalesforceAdapter(salesforce_credentials)
-    sales_force_client.login()
-    # print(sales_force_client.connection.session_id)
 
-    for sf2db_mapping in mappings:
-        # print(sf2dbmapping)    
-        db_table_config = next((config for config in db_tables_configs if config.get('tablename') == sf2db_mapping.db_table_name), None)
-        # print(db_table_config)
-        db_table: DBTable = db_table_factory(db_table_config)
-        # print (db_table)
-        soql_query= soql.build_soql_query(object_name =sf2db_mapping.salesforce_object_name, columns = [sf_fields.saleforce_field for sf_fields in sf2db_mapping.col_mappings])
-        # print(soql)
-        query_result = sales_force_client.query(soql_query)
-        
-        with DBSession(db_uri=config.ConfigFiles.DB_URI) as db_session: 
-            for record in query_result:
-                # Filter out the 'attributes' key from the record dictionary
-                # filtered_record = {field: value for field, value in record.items() if field != 'attributes'}
-                print(record)
-                
-                db_data = convert(sf_data=record, 
-                                  salesforce_fields=[sf_fields.saleforce_field for sf_fields in sf2db_mapping.col_mappings],
-                                  db_columns=[db_columns.db_column_name for db_columns in sf2db_mapping.col_mappings])
-                
-
-                print(db_data)
-                db_record = db_table(**db_data)
-                db_session.add(db_record)
 
 if __name__ == "__main__":
     SF_CREDENTIALS = ConfigFiles.CREDENTIALS
