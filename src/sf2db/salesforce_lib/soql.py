@@ -44,10 +44,10 @@ def build_soql_query(object_name: str,
     return soql_query
 
 # Usage Example
-if __name__ == "__main__":
-    query = build_soql_query("Account", 
-                         columns=["Id", "Name"], 
-                         where_clauses=[("LastModifiedDate", ">=", "2023-01-01T00:00:00Z")], 
-                         order_by=("LastModifiedDate", "DESC"), 
-                         limit=50)
-    print(query)
+# if __name__ == "__main__":
+#     query = build_soql_query("Account", 
+#                          columns=["Id", "Name"], 
+#                          where_clauses=[("LastModifiedDate", ">=", "2023-01-01T00:00:00Z")], 
+#                          order_by=("LastModifiedDate", "DESC"), 
+#                          limit=50)
+#     print(query)

@@ -29,7 +29,7 @@ def read_yaml(file: str) -> YAMLData:
 
 
 # Usage example
-if __name__ == "__main__":
-    from .config import ConfigFiles
-    yaml_data = read_yaml(file = ConfigFiles.CREDENTIALS)
-    print(yaml_data)
+# if __name__ == "__main__":
+#     from ..app.config import ConfigFiles
+#     yaml_data = read_yaml(file = ConfigFiles.CREDENTIALS)
+#     print(yaml_data)

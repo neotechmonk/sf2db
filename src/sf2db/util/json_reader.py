@@ -24,8 +24,8 @@ def read_json(file: str) -> Dict[str, Any]:
         raise JSONParseError(f"Error parsing the JSON file: {str(e)}")
 
 
-# Usage example
-if __name__ == "__main__":
-    from .config import ConfigFiles
-    json_data = read_json(file=ConfigFiles.SF2DB_MAPPINGS)
-    print(json_data)
+# # Usage example
+# if __name__ == "__main__":
+#     from ..app.config import ConfigFiles
+#     json_data = read_json(file=ConfigFiles.SF2DB_MAPPINGS)
+#     print(json_data)

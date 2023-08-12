@@ -36,24 +36,24 @@ def convert(sf_data: Dict[str, str],
 
 
 # Example usage
-if __name__ == '__main__':
-    sf_data = {
-        'Id': '0019j000008WrENAA0',
-        'Name': 'Sauce',
-        'PersonEmail': None,
-        'IsDeleted': False,
-        'CreatedDate': '2023-07-11T09:08:46.000+0000'
-    }
+# if __name__ == '__main__':
+#     sf_data = {
+#         'Id': '0019j000008WrENAA0',
+#         'Name': 'Sauce',
+#         'PersonEmail': None,
+#         'IsDeleted': False,
+#         'CreatedDate': '2023-07-11T09:08:46.000+0000'
+#     }
 
-    salesforce_fields = ['Id', 'Name', 'PersonEmail', 'IsDeleted', 'CreatedDate']
-    db_columns = ['ID', 'PRODUCT_NAME', 'EMAIL', 'IS_DELETED', 'DATE_CREATED']
+#     salesforce_fields = ['Id', 'Name', 'PersonEmail', 'IsDeleted', 'CreatedDate']
+#     db_columns = ['ID', 'PRODUCT_NAME', 'EMAIL', 'IS_DELETED', 'DATE_CREATED']
 
-    converted_result = convert(sf_data, salesforce_fields, db_columns)
-    print (f"Before conversion \n",
-           f"{sf_data}",
-           f"\n -----------------")
+#     converted_result = convert(sf_data, salesforce_fields, db_columns)
+#     print (f"Before conversion \n",
+#            f"{sf_data}",
+#            f"\n -----------------")
     
-    print (f"After conversion \n",
-           f"{converted_result}",
-           f"\n -----------------")
+#     print (f"After conversion \n",
+#            f"{converted_result}",
+#            f"\n -----------------")
     

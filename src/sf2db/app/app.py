@@ -8,10 +8,8 @@ from sf2db.db.session import DBSession
 from sf2db.mapping.model_factory import mapping_factory
 from sf2db.mapping.models import TableMapping
 from sf2db.mapping.sf_to_db_converter import convert
-from sf2db.salesforce_lib import SFAdapters, SFInterface, soql
+from sf2db.salesforce_lib import SFInterface, soql
 from sf2db.util import json_reader, yaml_reader
-
-from .config import ConfigFiles
 
 
 class App:
@@ -114,19 +112,3 @@ class App:
 
         for mapping in self.sf2db_mappings:
             self._persist_salesforce_to_db(mapping = mapping)
-
-
-if __name__ == "__main__":
-    SF_CREDENTIALS = ConfigFiles.CREDENTIALS
-    SF2DB_MAPPINGS = ConfigFiles.SF2DB_MAPPINGS
-    DB_TABLE_DEFINITIONS = ConfigFiles.DB_TABLES
-    DR_URI = ConfigFiles.DB_URI
-    SALESFORCE_CLIENT_ADAPTER = SFAdapters.SimpleSalesforceAdapter
-
-    app = App(path_db_table_def=DB_TABLE_DEFINITIONS, 
-              path_db_uri=DR_URI, 
-              path_sf_credentials=SF_CREDENTIALS, 
-              path_sf2db_mappings=SF2DB_MAPPINGS,
-              salesforce_client_adapter=SALESFORCE_CLIENT_ADAPTER)
-    
-    app.run()
