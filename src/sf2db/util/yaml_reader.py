@@ -1,9 +1,10 @@
 
 
-from typing import Any, Dict
+from typing import Any, Callable, Dict
 
 import yaml
 
+YAMLConfig = Callable[[str], Dict[str, Any]]
 
 # Custom errors
 class YAMLFileNotFoundError(Exception):
@@ -15,7 +16,7 @@ class YAMLParseError(Exception):
     pass
 
 
-def read_yaml(file: str) -> Dict[str, Any]:
+def read_yaml(file: str) -> YAMLConfig:
     """Utility .yaml reader"""
     try:
         with open(file, 'r') as f:

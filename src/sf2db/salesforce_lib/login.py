@@ -4,8 +4,8 @@ from typing import Dict
 from simple_salesforce import Salesforce
 from simple_salesforce.exceptions import SalesforceAuthenticationFailed
 
-from cmcs.util.config import ConfigFiles
-from cmcs.util.file_reader import read_yaml
+from sf2db.util.config import ConfigFiles
+from sf2db.util.yaml_reader import read_yaml
 
 
 class ConfigValueError(Exception):

@@ -27,5 +27,5 @@ def read_json(file: str) -> Dict[str, Any]:
 # Usage example
 if __name__ == "__main__":
     from .config import ConfigFiles
-    json_data = read_json(file=ConfigFiles.OBJECT_MAPPINGS)
+    json_data = read_json(file=ConfigFiles.SF2DB_MAPPINGS)
     print(json_data)

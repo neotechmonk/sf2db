@@ -12,23 +12,22 @@ from datetime import datetime
 from pprint import pprint
 from typing import Any, Dict
 
-from cmcs.db.model_factory import (DBTableDefinition,
-                                   create_db_table_definitions,
-                                   create_dynamic_db_table)
-from cmcs.db.models import DBTable, to_dict
-from cmcs.db.session import DBSession
-from cmcs.db.setup_tables import (TableAlreadyExistsError,
-                                  TableDefinitionJSONData, setup_tables)
-from cmcs.util.config import ConfigFiles
-from cmcs.util.json_reader import read_json
+from sf2db.db.model_factory import (DBTableDefinition, generate_db_table,
+                                    generate_db_table_definition)
+from sf2db.db.models import DBTable, to_dict
+from sf2db.db.session import DBSession
+from sf2db.db.setup_tables import (TableAlreadyExistsError,
+                                   TableDefinitionJSONData, setup_tables)
+from sf2db.util.config import ConfigFiles
+from sf2db.util.json_reader import read_json
 
 
 def define_table_by_name(desired_table_name: str, 
                          table_def_json_data:TableDefinitionJSONData) -> DBTable:
-    table_definitions = create_db_table_definitions(table_def_json_data)
+    table_definitions = generate_db_table_definition(table_def_json_data)
     for table_definition in table_definitions:
         if table_definition.table_name == desired_table_name:
-            return create_dynamic_db_table(table_definition)
+            return generate_db_table(table_definition)
     else:
         print(f"Table definition for {desired_table_name} not found.")
 

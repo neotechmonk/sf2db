@@ -1,15 +1,14 @@
 from pprint import pprint
 from typing import Any, Dict, List
 
+from cmcs.util.config import ConfigFiles
+from cmcs.util.json_reader import read_json
 from sqlalchemy import create_engine
 from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy.orm import sessionmaker
 
-from cmcs.util.config import ConfigFiles
-from cmcs.util.json_reader import read_json
-
-from .model_factory import (DBTableDefinition, create_db_table_definitions,
-                            create_dynamic_db_table)
+from .model_factory import (DBTableDefinition, generate_db_table,
+                            generate_db_table_definition)
 from .models import Base, DBTable
 
 
@@ -20,13 +19,13 @@ class TableAlreadyExistsError(Exception):
 TableDefinitionJSONData =  Dict[str, Dict[str, Any]]
 
 def setup_tables(db_uri : str, config_data : TableDefinitionJSONData):
-    table_definitions :list[DBTableDefinition] = create_db_table_definitions(config_data)
+    table_definitions :list[DBTableDefinition] = generate_db_table_definition(config_data)
 
     tables : List = []
 
     engine = create_engine(db_uri)    
     for definition in table_definitions:
-        db_table = create_dynamic_db_table(definition)
+        db_table = generate_db_table(definition)
         tables.append(db_table)
         try: 
             Base.metadata.create_all(bind  = engine)

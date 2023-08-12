@@ -14,25 +14,25 @@ class SQLAlchemyTypeError(Exception):
 
 
 ALLOWED_SQLALCHEMY_TYPES: Tuple[Type, ...] = (
-                                  sqlalchemy.Integer, 
-                                  sqlalchemy.String, 
-                                  sqlalchemy.Float, 
-                                  sqlalchemy.Boolean, 
+                                  sqlalchemy.Integer,
+                                  sqlalchemy.String,
+                                  sqlalchemy.Float,
+                                  sqlalchemy.Boolean,
                                   sqlalchemy.DateTime)
 
 def get_sqlalchemy_type(type_name: str)-> ALLOWED_SQLALCHEMY_TYPES:
     """"""
-    
+
     sqlalchemy_type = getattr(sqlalchemy, type_name, None)
 
     if sqlalchemy_type is None :
         raise SQLAlchemyTypeError(f"SQLAlchemy type can not be None")
     elif sqlalchemy_type not in ALLOWED_SQLALCHEMY_TYPES:
-        valid_types = ", ".join([allowed_type.__name__ for allowed_type in ALLOWED_SQLALCHEMY_TYPES])                          
+        valid_types = ", ".join([allowed_type.__name__ for allowed_type in ALLOWED_SQLALCHEMY_TYPES])
         raise SQLAlchemyTypeError(f"SQLAlchemy type '{type_name}' must be one of {valid_types}")
 
     return sqlalchemy_type
-    
+
 # endregion
 
 # region Dynamic definition of SQL Tables
@@ -54,13 +54,13 @@ class DBColumnDefinition():
             ....
     """
     column_name : str
-    column_type:str 
+    column_type:str
     is_primary_key : bool =field(default=False)
     column_length: int = field(default=None)  # Length is only applicable to `sqlalchemy.String`
 
 
 @dataclass
-class DBTableDefinition():  
+class DBTableDefinition():
     """Representation of db_tables.json's table definition
     Limitation : does not support relationship between tables
     Columns of the tables of type `DBColumnDefinition`
@@ -80,41 +80,37 @@ class DBTableDefinition():
     columns: list[DBColumnDefinition]
 
 
-JSONTableDefinition = Callable[[str], List[dict[str, Any]]]
-def create_db_table_definitions(table_definition_data: JSONTableDefinition) -> List[DBTableDefinition]:
+JSONTableConfig = Callable[[str], List[dict[str, Any]]]
+def generate_db_table_definition(definition_config: JSONTableConfig) -> DBTableDefinition:
 
-    db_table_definitions = []
-    
-    for table_def_block in table_definition_data:
-        columns = [
-            DBColumnDefinition(
-                column_name=column_def['name'],
-                column_type=column_def.get('type'),
-                column_length=column_def.get('length'),
-                is_primary_key=column_def.get('primary_key', False)
-            )
-            for column_def in table_def_block['columns']
-        ]
-        
-        table_definition = DBTableDefinition(table_name=table_def_block["tablename"], columns=columns)
-        db_table_definitions.append(table_definition)
+    columns = [
+        DBColumnDefinition(
+            column_name=column_def['name'],
+            column_type=column_def.get('type'),
+            column_length=column_def.get('length'),
+            is_primary_key=column_def.get('primary_key', False)
+        )
+        for column_def in definition_config['columns']
+    ]
 
-    return db_table_definitions
+    table_definition = DBTableDefinition(table_name=definition_config["tablename"], columns=columns)
+
+    return table_definition
 # endregion
 
 # region Create SQL Tables dynamically based on DBTableDefinition
-def create_dynamic_db_table(db_table_definition:DBTableDefinition)-> DBTable:
+def generate_db_table(db_table_definition:DBTableDefinition)-> DBTable:
     class_attrs = {'__tablename__': db_table_definition.table_name}
-    
+
     for column in db_table_definition.columns:
-        sqlalchemy_col_type = get_sqlalchemy_type (type_name = column.column_type ) 
+        sqlalchemy_col_type = get_sqlalchemy_type (type_name = column.column_type )
 
         # SQLAlchemyColumnType.String requires in Column
         if isinstance(sqlalchemy_col_type, sqlalchemy.String):
-            class_attrs[column.column_name] = sqlalchemy.Column(sqlalchemy_col_type(column.column_length), 
+            class_attrs[column.column_name] = sqlalchemy.Column(sqlalchemy_col_type(column.column_length),
                                                      primary_key=column.is_primary_key)
         else:
-            class_attrs[column.column_name] = sqlalchemy.Column(sqlalchemy_col_type, 
+            class_attrs[column.column_name] = sqlalchemy.Column(sqlalchemy_col_type,
                                                      primary_key=column.is_primary_key)
 
     dt_table = type(db_table_definition.table_name, (DBTable,), class_attrs)
@@ -133,9 +129,8 @@ def create_dynamic_db_table(db_table_definition:DBTableDefinition)-> DBTable:
 #         "email": "doe@example.com",
 #         "created_at": datetime.datetime.now(),
 #         "is_active": True}
-#     for definition in table_definitions: 
+#     for definition in table_definitions:
 #         db_table = create_dynamic_db_table(definition)
 #         print(type(db_table))
 #         user = db_table(**user_data)
 #         pprint(to_dict(user))
-    

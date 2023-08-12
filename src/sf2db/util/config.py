@@ -5,6 +5,6 @@ from enum import StrEnum
 
 class ConfigFiles(StrEnum):
     CREDENTIALS = '../config/login.yaml'
-    OBJECT_MAPPINGS = '../config/object_mappings.json'
+    SF2DB_MAPPINGS = '../config/salesforce_to_db.json'
     DB_TABLES = '../config/db_tables.json'
     DB_URI = 'sqlite:///example.db'
