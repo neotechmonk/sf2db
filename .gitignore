@@ -162,6 +162,8 @@ cython_debug/
 /config/*
 !/config/examples/
 
+# exclude production logs
+/logs/*
 *.db
 
 .vscode/
