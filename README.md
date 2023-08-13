@@ -133,7 +133,8 @@ __logger_config.json__
             "level": "DEBUG",
             "propagate": true
             }
-        }```  
+        }
+```  
 
 
 ## Contributing
