@@ -5,7 +5,7 @@ from sf2db.app.config import ConfigFiles
 from sf2db.salesforce import SFAdapters
 
 if __name__ == "__main__":
-    SF_CREDENTIALS = ConfigFiles.CREDENTIALS
+    SF_CREDENTIALS = ConfigFiles.SALESFORCE_CREDENTIALS
     SF2DB_MAPPINGS = ConfigFiles.SF2DB_MAPPINGS
     DB_TABLE_DEFINITIONS = ConfigFiles.DB_TABLES
     DR_URI = ConfigFiles.DB_URI
