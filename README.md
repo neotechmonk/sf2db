@@ -115,7 +115,7 @@ __`salesforce_credentatials.yaml`__
 
     Program accesses this file using `src/sf2db/app/config.py`s `ConfigFiles.SALESFORCE_CREDENTIALS`  
 
-__`logger_config.json`__
+__`logger_config.json`__ 
     [Logging configuration for Python's core `logging` module](https://docs.python.org/3/library/logging.config.html)  
     Sample file is `config/examples/logger_config.json`.   
 
