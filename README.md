@@ -109,11 +109,12 @@ __salesforce_to_db.json__
 
     Program accesses this file using `src/sf2db/app/config.py`s `ConfigFiles.SF2DB_MAPPINGS`  
 
-__salesforce_credentatials.yaml__  
-    Maps Salesforce objects with relational database tables defined in `db_tables.json`  
-    Sample file is `config/examples/salesforce_credentatials.yaml`.   
+__salesforce_credentatials.yaml__
 
-    Program accesses this file using `src/sf2db/app/config.py`s `ConfigFiles.SALESFORCE_CREDENTIALS`  
+>Maps Salesforce objects with relational database tables defined in `db_tables.json`  
+Sample file is `config/examples/salesforce_credentatials.yaml`.   
+
+Program accesses this file using `src/sf2db/app/config.py`s `ConfigFiles.SALESFORCE_CREDENTIALS`  
 
 __logger_config.json__
 
@@ -124,7 +125,7 @@ __logger_config.json__
 >Main logger name is prescribed here `Configs.LOGGER_APP_NAME`.  
 >This should match the below in the logger config file  
 
->E.g. _sf2db-logger_ in the below extract  
+>>E.g. _sf2db-logger_ in the below extract  
 
 ```json
     "loggers": {
