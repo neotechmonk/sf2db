@@ -114,7 +114,7 @@ class App:
         """ Main function that downloads data for given `TableMapping` entry 
             in `salesforce_to_db.json`and saves in the database
 
-            Key functions include:
+            Key functions are:
 
             1. Creating the SOQL query string
             2. Fetching the data from Salesforce
@@ -164,8 +164,6 @@ class App:
         else: 
             log.info(f"Successfully stored records from Salesforce object : `{mapping.salesforce_object_name}` into database table : `{mapping.db_table_name}`")
             
-
-
     def run(self):
         log.info("Starting src.sf2db.app.App.run()")  
 
