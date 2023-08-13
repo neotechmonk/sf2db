@@ -16,53 +16,57 @@ A python utility to fetch data from Salesforce and store the information in a re
 
 ## Introduction
 
-THe program facilitates its functionality by allowing the user to configure most aspects, especially mapping between Salesforce objects and target relational database. 
+THe program facilitates its functionality by allowing the user to configure most aspects, especially mapping between Salesforce objects and target relational database.  
 
 The program one Salesforce objects with a database table. E.g. `Accounts` Salesforce object van be mapped against `User` database table. 
 
-The program is limited in its ability to establish a relationship between multiple Salesforce objects and transform them into one a single relational table.
+The program is limited in its ability to establish a relationship between multiple Salesforce objects and transform them into one a single relational table.  
+## Installation  
 
-## Installation
+Clone the repo ensure  all files & sub-folders in `config` and `src` are present  
 
-Clone the repo ensure  all files & sub-folders in `config` and `src` are present
-
-All configuration files in `config` folder must be setup prior to running the program. Referen to [Examples section](#examples)
+All configuration files in `config` folder must be setup prior to running the program. Referen to [Examples section](#examples)  
 
 ## Usage
-The program can to be used in part of 3rd party codebase or as a standalone utility in a batch process
+The program can to be used in part of 3rd party codebase or as a standalone utility in a batch process  
 
-Examples of batch process
-1. **Scheduling with Cron (Unix-like systems)**
+Examples of batch process  
 
-Edit cron
+1. **Scheduling with Cron (Unix-like systems)**  
+
+Edit cron  
 ```sh
 crontab -e
-```
+```  
 
-Add the following line to run the script every day at 2:00 AM: 
+Add the following line to run the script every day at 2:00 AM:  
 ```sh
 0 2 * * * /path/to/python3 /path/to/src/main.py
-```
+```  
 
-2. **Scheduling with a Batch File (Windows)**
+2. **Scheduling with a Batch File (Windows)**  
 
-Create a batch file (e.g., run_script.bat) using a text editor, and add the following line:
+Create a batch file (e.g., run_script.bat) using a text editor, and add the following line:  
 
 ```powershell 
 C:\path\to\python.exe C:\path\to\src\main.py
-```
+```  
 
-Replace `C:\path\to\python.exe` with the actual path to your Python interpreter and `C:\path\to\src\main.py` with the actual path to your script.
+Replace `C:\path\to\python.exe` with the actual path to your Python interpreter and `C:\path\to\src\main.py` with the actual path to your script.  
 
-## Developer Notes
-__Application entry__
-`src.main.py` which calls `src.sf2db.app.app.py`
+## Developer Notes  
 
-__Salesforce API__
+__Application entry__  
+
+`src.main.py` which calls `src.sf2db.app.app.py`  
+
+__Salesforce API__  
+
 [`simple-salesforce`](https://pypi.org/project/simple-salesforce/) is the primary Adapter used to login and query Salesforce.
-The primary adapter can be change to another package or custom implementation so long as it is adheres to the contract of `src.sf2db.salesforce.SFInterface` Protocol class
+The primary adapter can be change to another package or custom implementation so long as it is adheres to the contract of `src.sf2db.salesforce.SFInterface` Protocol class  
 
 ## Future developments
+
 - [ ] Logging 
 - [ ] Unit testing
 - [ ] Success / Failutre notification to various targets
@@ -70,37 +74,41 @@ The primary adapter can be change to another package or custom implementation so
 - [ ] Decoupling of SQL Alchemy as ORM package via Abstraction/Interfaces
 
 ## Examples
-Note that all configuration items are case sensitive
+
+Note that all configuration items are case sensitive  
 
 __db_config.yaml__
-Defines the connection string to the target database
-Sample file is `config/examples/db_config.json`
 
-Program accesses this file using `src/sf2db/app/config.py`s `ConfigFiles.DB_URI`
+Defines the connection string to the target database  
+Sample file is `config/examples/db_config.json`  
 
-__db_tables.json__
+Program accesses this file using `src/sf2db/app/config.py`s `ConfigFiles.DB_URI`  
 
-Defines the relational DB structure 
-Sample file is `config/examples/db_tables.json`
+__db_tables.json__  
 
-Program accesses this file using `src/sf2db/app/config.py`s `ConfigFiles.DB_TABLES`
+Defines the relational DB structure  
+Sample file is `config/examples/db_tables.json`  
 
-Columns only support `name`, `type`, and `primary_key` as json attributes
-`type` is one of [SQLAlchemy Types](https://docs.sqlalchemy.org/en/20/core/types.html)
-Permitted types are in `src/sf2db/db/model_factory.py`'s `ALLOWED_SQLALCHEMY_TYPES`
+Program accesses this file using `src/sf2db/app/config.py`s `ConfigFiles.DB_TABLES`  
+ 
+Columns only support `name`, `type`, and `primary_key` as json attributes  
+`type` is one of [SQLAlchemy Types](https://docs.sqlalchemy.org/en/20/core/types.html)  
+Permitted types are in `src/sf2db/db/model_factory.py`'s `ALLOWED_SQLALCHEMY_TYPES`  
 
-__salesforce_to_db.json__
-Maps Salesforce objects with relational database tables defined in `db_tables.json`
-Sample file is `config/examples/db_tables.json`. 
+__salesforce_to_db.json__  
 
-Program accesses this file using `src/sf2db/app/config.py`s `ConfigFiles.SF2DB_MAPPINGS`
+Maps Salesforce objects with relational database tables defined in `db_tables.json`  
+Sample file is `config/examples/db_tables.json`.   
 
-__salesforce_credentatials.yaml__
-Maps Salesforce objects with relational database tables defined in `db_tables.json`
-Sample file is `config/examples/salesforce_credentatials.yaml`. 
-Production file _must be renamed_ to `salesforce_credentatials.yaml`
+Program accesses this file using `src/sf2db/app/config.py`s `ConfigFiles.SF2DB_MAPPINGS`  
 
-Program accesses this file using `src/sf2db/app/config.py`s `ConfigFiles.SALESFORCE_CREDENTIALS`
+__salesforce_credentatials.yaml__  
+
+Maps Salesforce objects with relational database tables defined in `db_tables.json`  
+Sample file is `config/examples/salesforce_credentatials.yaml`.   
+Production file _must be renamed_ to `salesforce_credentatials.yaml`  
+
+Program accesses this file using `src/sf2db/app/config.py`s `ConfigFiles.SALESFORCE_CREDENTIALS`  
 
 ## Contributing
 
@@ -108,15 +116,15 @@ Program accesses this file using `src/sf2db/app/config.py`s `ConfigFiles.SALESFO
 
 ### Reporting Issues
 
-If you find a bug or have a feature request, please open an issue on our [GitHub repository](https://github.com/neotechmonk/cmcs/issues). Provide as much detail as possible so that the issue can be undertood and reproduced
+If you find a bug or have a feature request, please open an issue on our [GitHub repository](https://github.com/neotechmonk/cmcs/issues). Provide as much detail as possible so that the issue can be undertood and reproduced  
 
 ### Suggesting Enhancements
 
-If you have a suggestion for an enhancement, an issue on  [GitHub repository](https://github.com/neotechmonk/cmcs/issues) and label it as an "enhancement."
+If you have a suggestion for an enhancement, an issue on  [GitHub repository](https://github.com/neotechmonk/cmcs/issues) and label it as an "enhancement."  
 
 ### Pull Requests
 
-We welcome pull requests from the community! If you'd like to contribute code to the project, follow these steps:
+We welcome pull requests from the community! If you'd like to contribute code to the project, follow these steps:  
 
 1. Fork the repository on GitHub.
 2. Create a new branch from the `main` branch: `git checkout -b your-feature-branch`
@@ -126,13 +134,13 @@ We welcome pull requests from the community! If you'd like to contribute code to
 6. Push your branch to your fork: `git push origin your-feature-branch`
 7. Open a pull request against the `main` branch of the original repository.
 
-Will review your pull request and provide feedback. Once your changes are approved, they will be merged into the main project.
+Will review your pull request and provide feedback. Once your changes are approved, they will be merged into the main project.  
 
 ### Coding Guidelines
 
-- Follow the [PEP 8 style guide](https://www.python.org/dev/peps/pep-0008/) for Python code.
-- Keep your code clean and well-documented.
-- Write meaningful commit messages that explain your changes.
+- Follow the [PEP 8 style guide](https://www.python.org/dev/peps/pep-0008/) for Python code.  
+- Keep your code clean and well-documented.  
+- Write meaningful commit messages that explain your changes.  
 
 ## Licensing
 
