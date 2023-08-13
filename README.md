@@ -85,14 +85,14 @@ __Folder organisation__
 
 Note that all configuration items are case sensitive  
 
-__`db_config.yaml`__
+__db_config.yaml__
 
     Defines the connection string to the target database  
     Sample file is `config/examples/db_config.json`  
 
     Program accesses this file using `src/sf2db/app/config.py`s `ConfigFiles.DB_URI`  
 
-__`db_tables.json`__  
+__db_tables.json__  
 
     Defines the relational DB structure  
     Sample file is `config/examples/db_tables.json`  
@@ -103,13 +103,14 @@ __`db_tables.json`__
     `type` is one of [SQLAlchemy Types](https://docs.sqlalchemy.org/en/20/core/types.html)  
     Permitted types are in `src/sf2db/db/model_factory.py`'s `ALLOWED_SQLALCHEMY_TYPES`  
 
-__`salesforce_to_db.json`__  
+__salesforce_to_db.json__  
     Maps Salesforce objects with relational database tables defined in `db_tables.json`  
     Sample file is `config/examples/db_tables.json`.   
 
     Program accesses this file using `src/sf2db/app/config.py`s `ConfigFiles.SF2DB_MAPPINGS`  
 
-__`salesforce_credentatials.yaml`__
+__salesforce_credentatials.yaml__
+
     Maps Salesforce objects with relational database tables defined in `db_tables.json`  
     Sample file is `config/examples/salesforce_credentatials.yaml`.   
 
