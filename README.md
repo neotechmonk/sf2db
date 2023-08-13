@@ -75,6 +75,7 @@ __Folder organisation__
     - `/src/util` : utility functions used by other modules
 - `/test/` : unit tests *not implemented yet  
 ## Future developments
+<a name="future-dev"></a>
 
 - [x] Logging 
 - [ ] Unit testing
@@ -173,6 +174,7 @@ Will review your pull request and provide feedback. Once your changes are approv
 - Write meaningful commit messages that explain your changes.  
 
 ## Licensing
+<a name="licence"></a>
 
 SF2DB is open-source software released under the [MIT License](https://choosealicense.com/licenses/mit/).
 You can find the full text of the MIT License in the [LICENSE](LICENSE.txt) file.
