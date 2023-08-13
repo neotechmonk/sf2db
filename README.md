@@ -113,7 +113,9 @@ __salesforce_credentatials.yaml__
 
 >Maps Salesforce objects with relational database tables defined in `db_tables.json`  
 Sample file is `config/examples/salesforce_credentatials.yaml`.   
-Program accesses this file using `src/sf2db/app/config.py`s `ConfigFiles.SALESFORCE_CREDENTIALS`  
+
+>Program accesses this file using `src/sf2db/app/config.py`s `ConfigFiles.SALESFORCE_CREDENTIALS`
+
 
 __logger_config.json__
 
