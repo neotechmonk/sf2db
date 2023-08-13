@@ -125,7 +125,8 @@ __`logger_config.json`__
     Program accesses this file using `src/sf2db/app/config.py`s `ConfigFiles.LOGGER_CONFIG`  
     Main logger name is prescribed here `Configs.LOGGER_APP_NAME`. This should match the below in the logger config file  
     E.g. _sf2db-logger_ in the below extract
-        ```"loggers": {
+        ```json
+            "loggers": {
                 "sf2db-logger": {
                     "handlers": ["file", "console"],
                     "level": "DEBUG",
