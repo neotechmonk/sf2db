@@ -8,7 +8,7 @@ from sf2db.util.path import absolute
 
 if __name__ == "__main__":
     log = logger()
-    log.info("Starting app")  
+    log.info("Starting the app...")  
     
     this_file_path  = __file__
 
@@ -19,13 +19,16 @@ if __name__ == "__main__":
     DB_CONFIG_PATH = absolute (this_file_path, Configs.DB_COFIG)
     SALESFORCE_CLIENT_ADAPTER = SFAdapters.SimpleSalesforceAdapter
    
-   
-    app = App(path_db_table_def=DB_TABLE_DEFINITIONS_PATH, 
-              path_db_config=DB_CONFIG_PATH, 
-              path_sf_credentials=SF_CREDENTIALS_PATH, 
-              path_sf2db_mappings=SF2DB_MAPPINGS_PATH,
-              salesforce_client_adapter=SALESFORCE_CLIENT_ADAPTER)
+    try: 
+        app = App(path_db_table_def=DB_TABLE_DEFINITIONS_PATH, 
+                path_db_config=DB_CONFIG_PATH, 
+                path_sf_credentials=SF_CREDENTIALS_PATH, 
+                path_sf2db_mappings=SF2DB_MAPPINGS_PATH,
+                salesforce_client_adapter=SALESFORCE_CLIENT_ADAPTER)
+        
+        app.run()
+    except Exception as e:
+        log.critical("Unknown error occured in `src.main.py`")  
+    else : 
+        log.info("Stopping the app now....")  
     
-    app.run()
-
-    log.info("Stopping app")  

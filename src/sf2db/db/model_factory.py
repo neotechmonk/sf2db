@@ -80,41 +80,57 @@ class DBTableDefinition():
     columns: list[DBColumnDefinition]
 
 
+class TableDefinitionGenerationError(Exception):
+    """
+    Raised when there is an error during the generation of a DBTableDefinition.
+    This exception indicates issues related to generating table definitions.
+    """
+
 JSONTableConfig = Callable[[str], List[dict[str, Any]]]
 def generate_db_table_definition(definition_config: JSONTableConfig) -> DBTableDefinition:
+    try:
+        columns = [
+            DBColumnDefinition(
+                column_name=column_def['name'],
+                column_type=column_def.get('type'),
+                column_length=column_def.get('length'),
+                is_primary_key=column_def.get('primary_key', False)
+            )
+            for column_def in definition_config['columns']
+        ]
 
-    columns = [
-        DBColumnDefinition(
-            column_name=column_def['name'],
-            column_type=column_def.get('type'),
-            column_length=column_def.get('length'),
-            is_primary_key=column_def.get('primary_key', False)
-        )
-        for column_def in definition_config['columns']
-    ]
+        table_definition = DBTableDefinition(table_name=definition_config["tablename"], columns=columns)
 
-    table_definition = DBTableDefinition(table_name=definition_config["tablename"], columns=columns)
+        return table_definition
+    except (KeyError, AttributeError, TypeError, ValueError) as e:
+        raise TableDefinitionGenerationError(f"Error generating table definition :  {str(e)}")
 
-    return table_definition
+    
 # endregion
 
+class DBTableGenerationError(Exception):
+    """
+    Raised when there is an error during the dynamic generation of a DBTable's sub Classes.
+    """
 # region Create SQL Tables dynamically based on DBTableDefinition
 def generate_db_table(db_table_definition:DBTableDefinition)-> DBTable:
     class_attrs = {'__tablename__': db_table_definition.table_name}
+    try: 
+        for column in db_table_definition.columns:
+            sqlalchemy_col_type = get_sqlalchemy_type (type_name = column.column_type )
+        
+            # SQLAlchemyColumnType.String requires in Column
+            if isinstance(sqlalchemy_col_type, sqlalchemy.String):
+                class_attrs[column.column_name] = sqlalchemy.Column(sqlalchemy_col_type(column.column_length),
+                                                        primary_key=column.is_primary_key)
+            else:
+                class_attrs[column.column_name] = sqlalchemy.Column(sqlalchemy_col_type,
+                                                        primary_key=column.is_primary_key)
 
-    for column in db_table_definition.columns:
-        sqlalchemy_col_type = get_sqlalchemy_type (type_name = column.column_type )
-
-        # SQLAlchemyColumnType.String requires in Column
-        if isinstance(sqlalchemy_col_type, sqlalchemy.String):
-            class_attrs[column.column_name] = sqlalchemy.Column(sqlalchemy_col_type(column.column_length),
-                                                     primary_key=column.is_primary_key)
-        else:
-            class_attrs[column.column_name] = sqlalchemy.Column(sqlalchemy_col_type,
-                                                     primary_key=column.is_primary_key)
-
-    dt_table = type(db_table_definition.table_name, (DBTable,), class_attrs)
-    return dt_table
+        dt_table = type(db_table_definition.table_name, (DBTable,), class_attrs)
+        return dt_table
+    except Exception as e:
+        raise DBTableGenerationError(f"Error generating subclass of `DBTable` for table {db_table_definition.table_name}") from e 
 # endregion
 
 

@@ -1,7 +1,7 @@
 from typing import List, Optional, Tuple
 
 
-def build_soql_query(object_name: str,
+def build_query(object_name: str,
                      columns: List[str] = ["*"],
                      where_clauses: Optional[List[Tuple[str, str, str]]] = None,
                      order_by: Optional[Tuple[str, str]] = None,

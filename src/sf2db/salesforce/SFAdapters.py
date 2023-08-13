@@ -3,9 +3,10 @@ from typing import Dict, List
 from simple_salesforce import Salesforce
 from simple_salesforce.exceptions import SalesforceAuthenticationFailed
 
-from sf2db.salesforce.SFInterface import (SalesforceAuthententicationError,
-                                          SalesforceCredentialConfigValueError,
+from sf2db.salesforce.SFInterface import (SalesforceCredentialConfigValueError,
                                           SalesforceCredentials,
+                                          SalesforceFetchError,
+                                          SalesforceLoginError,
                                           SalesforceQueryResult)
 
 
@@ -33,17 +34,19 @@ class SimpleSalesforceAdapter:
                 domain=self.credentials.domain)
 
             if not sf.session_id: 
-                raise SalesforceAuthententicationError("Authentication failed: No session id returned")
+                raise SalesforceLoginError("Authentication failed: No session id returned")
 
             self.connection =  sf
         except SalesforceAuthenticationFailed as e:
-            raise SalesforceAuthententicationError(f"Authentication failed: {str(e)}")
+            raise SalesforceLoginError(f"Authentication failed: {str(e)}")
 
     def query(self, socl_query_str: str) ->List[SalesforceQueryResult]:
         if not self.connection:
-            raise SalesforceAuthententicationError("You need to login before querying")
-        response = self.connection.query_all(query=socl_query_str)
-
+            raise SalesforceLoginError("You need to login before querying")
+        try : 
+            response = self.connection.query_all(query=socl_query_str)
+        except SalesforceFetchError as e:
+            raise SalesforceFetchError(f"Error fetching data from salesforce using SOQL query")
         records = response.get("records", [])
 
         # Filter out the 'attributes' key from each record
