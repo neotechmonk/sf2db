@@ -135,7 +135,7 @@ __logger_config.json__
 
 ## Contributing
 
- You can contribute in various ways, including reporting issues, suggesting improvements, and submitting pull requests.
+    You can contribute in various ways, including reporting issues, suggesting improvements, and submitting pull requests.
 
 ### Reporting Issues
 
