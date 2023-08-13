@@ -109,7 +109,7 @@ __salesforce_to_db.json__
 
     Program accesses this file using `src/sf2db/app/config.py`s `ConfigFiles.SF2DB_MAPPINGS`  
 
-__salesforce_credentatials.yaml__
+__salesforce_credentatials.yaml__  
     Maps Salesforce objects with relational database tables defined in `db_tables.json`  
     Sample file is `config/examples/salesforce_credentatials.yaml`.   
 
