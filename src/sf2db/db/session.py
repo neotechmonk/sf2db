@@ -1,7 +1,6 @@
-from sqlite3 import IntegrityError
 
 from sqlalchemy.engine import create_engine
-from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.orm import sessionmaker
 
 from .models import Base
@@ -47,15 +46,14 @@ class DBSession:
     def __exit__(self, exc_type, exc_value, traceback):
         try:
             if exc_type is None:
-                try: 
-                    self.session.commit()
-                except IntegrityError as e:  
-                    raise DuplicateRecordError("Error inserting records. Record wit primary key already exists", e)      
+                self.session.commit()
+                  
             else:
                 self.session.rollback()
-       
+        except (IntegrityError) as e:  
+            raise DuplicateRecordError(f"Error inserting records. Record with primary key already exists : {str(e)}")   
         except SQLAlchemyError as e:
-            raise DatabaseOperationError("An error occurred during database operation", e)
+            raise DatabaseOperationError(f"An general error occurred during database operation {str(e)}")
         finally:
             self.session.close()
             self.engine.dispose()

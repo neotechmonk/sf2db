@@ -28,7 +28,7 @@ if __name__ == "__main__":
         
         app.run()
     except Exception as e:
-        log.critical("Unknown error occured in `src.main.py`")  
+        log.critical(f"Unknown error occured in `src.main.py` : {str(e)}")  
     else : 
         log.info("Stopping the app now....")  
     

@@ -78,7 +78,7 @@ __Folder organisation__
 - `/test/` : unit tests *not implemented yet  
 ## Future developments
 
-- [ ] Logging 
+- [x] Logging 
 - [ ] Unit testing
 - [ ] Success / Failutre notification to various targets
 - [ ] Utility to verify configurations

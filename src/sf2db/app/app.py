@@ -51,8 +51,10 @@ class App:
             self.db_session = DBSession(db_uri=self._db_connection_str)
         except (yaml_reader.YAMLFileNotFoundError, yaml_reader.YAMLFileNotFoundError) as e : 
             log.exception(f"Error loading `salesforce_to_db.json` file @ {self.path_db_config} : {str(e)}")  
+            raise
         except DatabaseInitializationError as e : 
             log.exception(f"Error initialising database : {str(e)}")
+            raise
         else : 
             log.info(f"Successfully initialized the database")
 
@@ -64,8 +66,10 @@ class App:
             self.sf2db_mappings = [mapping_factory (mapping = _cd) for _cd in _config_data]
         except (json_reader.JSONFileNotFoundError, json_reader.JSONParseError) as e : 
             log.exception(f"Error loading `salesforce_to_db.json` file @ {self._path_sf2db_mappings} : {str(e)}") 
+            raise
         except MappingValueError as e : 
             log.exception(f"Error create `TableMapping` from `salesforce_to_db.json` file @ {self._path_sf2db_mappings}  : {str(e)}") 
+            raise
         else : 
             log.debug(f"Successfully mapped salesforce to databased tables")
      
@@ -78,8 +82,12 @@ class App:
             self.db_tables = [db_factory_fn (definition_config=_t_def) for _t_def in _config_data]
         except (json_reader.JSONFileNotFoundError, json_reader.JSONParseError) as e : 
             log.exception(f"Error loading `db_tables.json` file @ {self._path_db_table_def} : {str(e)}")  
+            raise
         except DBTableGenerationError as e :
             log.exception(f"Error dynamically creating sub classes of DBTables using `db_tables.json` file @ {self._path_db_table_def} : {str(e)}") 
+            raise
+        except Exception as e :
+            raise
         else : 
             log.debug(f"Successfully dynamically created DBTables subclasses using `db_tables.json` file @ {self._path_db_table_def} s")
 
@@ -94,8 +102,10 @@ class App:
 
         except (yaml_reader.YAMLFileNotFoundError, yaml_reader.YAMLFileNotFoundError) as e : 
             log.exception(f"Error loading `salesforce_credentatials.yaml` file @ {self._path_sf2db_mappings} : {str(e)}") 
+            raise
         except SalesforceLoginError as e : 
             log.exception(f"Error logging in to Salesforce") 
+            raise
         else : 
             log.debug(f"Successfully logged into Salesforce")
      
@@ -135,22 +145,24 @@ class App:
             log.debug(f"Successfully fetched salesforce data using SOQL query : {soql_query}")
 
         # Prepare records for DB insertion
-        db_records = [
-        db_table(**convert(
-            sf_data=record,
-            salesforce_fields=_sf_object_fields,
-            db_columns=_db_table_columns
-        ))
-        for record in sf_results]
+        try: 
+            db_records = [
+            db_table(**convert(
+                sf_data=record,
+                salesforce_fields=_sf_object_fields,
+                db_columns=_db_table_columns
+            ))
+            for record in sf_results]
 
-        # Bulk insert records into the database
-        with self.db_session as db_session:
-            try: 
-                db_session.add_all(db_records)
-            except (DuplicateRecordError, DatabaseOperationError) as e: 
-                log.exception(f"Error saving records to the database  : {str(e)}") 
-            else: 
-                log.info(f"Successfully stored records from Salesforce object :{mapping.salesforce_object_name} into database table : {mapping.db_table_name}")
+            # Bulk insert records into the database
+            with self.db_session as db_session:            
+                    db_session.add_all(db_records)
+        except (DuplicateRecordError ) as e: 
+            log.error(f"Error saving records to the database table `{mapping.db_table_name}`; Duplicate records")
+        except DatabaseOperationError as e:
+            log.exception(f"Error saving records to the database : Other transaction error {e}")
+        else: 
+            log.info(f"Successfully stored records from Salesforce object : `{mapping.salesforce_object_name}` into database table : `{mapping.db_table_name}`")
             
 
 
