@@ -125,6 +125,7 @@ __logger_config.json__
 >This should match the below in the logger config file  
 
 >E.g. _sf2db-logger_ in the below extract  
+
     ```json
         "loggers": {
             "sf2db-logger": {
