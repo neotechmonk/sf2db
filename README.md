@@ -135,11 +135,10 @@ __logger_config.json__
 
 ## Contributing
 
- You can contribute in various ways, including reporting issues, suggesting improvements, and submitting pull requests.
+>You can contribute in various ways, including reporting issues, suggesting improvements, and submitting pull requests.
 
 ### Reporting Issues
-
- If you find a bug or have a feature request, please open an issue on our [GitHub repository](https://github.com/neotechmonk/cmcs/issues). Provide as much detail as possible so that the issue can be undertood and reproduced  
+>If you find a bug or have a feature request, please open an issue on our [GitHub repository](https://github.com/neotechmonk/cmcs/issues). Provide as much detail as possible so that the issue can be undertood and reproduced  
 
 ### Suggesting Enhancements
 
