@@ -35,15 +35,15 @@ Examples of batch process
 
 1. **Scheduling with Cron (Unix-like systems)**  
 
->Edit cron  
-```sh
-crontab -e
-```  
+    Edit cron  
+        ```sh
+        crontab -e
+        ```  
 
->Add the following line to run the script every day at 2:00 AM:  
-```sh
-0 2 * * * /path/to/python3 /path/to/src/main.py
-```  
+    Add the following line to run the script every day at 2:00 AM:  
+        ```sh
+        0 2 * * * /path/to/python3 /path/to/src/main.py
+        ```  
 
 2. **Scheduling with a Batch File (Windows)**  
 
@@ -56,6 +56,7 @@ crontab -e
     Replace `C:\path\to\python.exe` with the actual path to your Python interpreter and `C:\path\to\src\main.py` with the actual path to your script.  
 
 ## Developer Notes  
+<a name="dev-notes"></a>
 
 __Application entry__  
 `src.main.py` which calls `src.sf2db.app.app.py`  
