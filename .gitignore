@@ -163,8 +163,8 @@ cython_debug/
 !/config/examples/
 
 # exclude production logs
-/logs/*
-!/logs/.gitkeep
+logs/*
+!logs/.gitkeep
 *.log
 
 *.db
