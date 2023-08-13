@@ -35,15 +35,15 @@ Examples of batch process
 
 1. **Scheduling with Cron (Unix-like systems)**  
 
-    Edit cron  
-        ```sh
-        crontab -e
-        ```  
+Edit cron  
+```sh
+crontab -e
+```  
 
-    Add the following line to run the script every day at 2:00 AM:  
-        ```sh
-        0 2 * * * /path/to/python3 /path/to/src/main.py
-        ```  
+Add the following line to run the script every day at 2:00 AM:  
+```sh
+0 2 * * * /path/to/python3 /path/to/src/main.py
+```  
 
 2. **Scheduling with a Batch File (Windows)**  
 
@@ -87,10 +87,10 @@ Note that all configuration items are case sensitive
 
 __db_config.yaml__
 
-    Defines the connection string to the target database  
-    Sample file is `config/examples/db_config.json`  
+>Defines the connection string to the target database  
+Sample file is `config/examples/db_config.json`  
 
-    Program accesses this file using `src/sf2db/app/config.py`s `ConfigFiles.DB_URI`  
+>Program accesses this file using `src/sf2db/app/config.py`s `ConfigFiles.DB_URI`  
 
 __db_tables.json__  
 
@@ -127,7 +127,7 @@ __logger_config.json__
 Main logger name is prescribed here `Configs.LOGGER_APP_NAME`.  
 This should match the below in the logger config file  
 
->>E.g. _sf2db-logger_ in the below extract  
+>E.g. _sf2db-logger_ in the below extract  
 
 ```json
     "loggers": {
