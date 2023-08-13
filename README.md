@@ -8,7 +8,7 @@ A python utility to fetch data from Salesforce and store the information in a re
 - [Installation](#installation)
 - [Usage](#usage)
 - [Configuration](#configuration)
-- [DeveloperNotes](#dev-notes)
+- [Developer Notes](#dev-notes)
 - [Future Developments](#future-dev)
 - [Examples](#examples)
 - [Contributing](#contributing)
@@ -16,16 +16,16 @@ A python utility to fetch data from Salesforce and store the information in a re
 
 ## Introduction
 
-THe program facilitates its functionality by allowing the user to configure most aspects, especially mapping between Salesforce objects and target relational database.  
+The program facilitates its functionality by allowing the user to configure most aspects, especially mapping between Salesforce objects and target relational database.  
 
-The program one Salesforce objects with a database table. E.g. `Accounts` Salesforce object van be mapped against `User` database table. 
+The program one Salesforce objects with a database table. E.g. `Accounts` Salesforce object can be mapped against `User` database table. 
 
 The program is limited in its ability to establish a relationship between multiple Salesforce objects and transform them into one a single relational table.  
 ## Installation  
 
 Clone the repo ensure  all files & sub-folders in `config` and `src` are present  
 
-All configuration files in `config` folder must be setup prior to running the program. Referen to [Examples section](#examples)  
+All configuration files in `config` folder must be setup prior to running the program. Refer to [Examples section](#examples) for the purpose of these configuration files
 
 ## Usage
 The program can to be used in part of 3rd party codebase or as a standalone utility in a batch process  
@@ -57,14 +57,24 @@ Examples of batch process
 ## Developer Notes  
 
 __Application entry__  
-
 `src.main.py` which calls `src.sf2db.app.app.py`  
 
 __Salesforce API__  
-
 [`simple-salesforce`](https://pypi.org/project/simple-salesforce/) is the primary Adapter used to login and query Salesforce.
 The primary adapter can be change to another package or custom implementation so long as it is adheres to the contract of `src.sf2db.salesforce.SFInterface` Protocol class  
 
+__Folder organisation__  
+- `/config` : all user driven configrations  
+- `/src` : source code  
+    - `/src/app` : integration point
+    - `/src/db` : target database concerns
+    - `/src/salesforce` : concerned with interacting with salesforce site
+    - `/src/mapping` : mapping between salesforce objects and database tables
+    - `/src/util` : utility functions used by other modules
+  
+
+
+- `/test/` : unit tests *not implemented yet  
 ## Future developments
 
 - [ ] Logging 
@@ -77,14 +87,14 @@ The primary adapter can be change to another package or custom implementation so
 
 Note that all configuration items are case sensitive  
 
-__db_config.yaml__
+__`db_config.yaml`__
 
     Defines the connection string to the target database  
     Sample file is `config/examples/db_config.json`  
 
     Program accesses this file using `src/sf2db/app/config.py`s `ConfigFiles.DB_URI`  
 
-__db_tables.json__  
+__`db_tables.json`__  
 
     Defines the relational DB structure  
     Sample file is `config/examples/db_tables.json`  
@@ -95,14 +105,14 @@ __db_tables.json__
     `type` is one of [SQLAlchemy Types](https://docs.sqlalchemy.org/en/20/core/types.html)  
     Permitted types are in `src/sf2db/db/model_factory.py`'s `ALLOWED_SQLALCHEMY_TYPES`  
 
-__salesforce_to_db.json__  
+__`salesforce_to_db.json`__  
 
     Maps Salesforce objects with relational database tables defined in `db_tables.json`  
     Sample file is `config/examples/db_tables.json`.   
 
     Program accesses this file using `src/sf2db/app/config.py`s `ConfigFiles.SF2DB_MAPPINGS`  
 
-__salesforce_credentatials.yaml__  
+__`salesforce_credentatials.yaml`__  
 
     Maps Salesforce objects with relational database tables defined in `db_tables.json`  
     Sample file is `config/examples/salesforce_credentatials.yaml`.   
