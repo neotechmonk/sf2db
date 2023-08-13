@@ -34,23 +34,23 @@ Examples of batch process
 
 1. **Scheduling with Cron (Unix-like systems)**  
 
-Edit cron  
-    ```sh
-    crontab -e
-    ```  
+    Edit cron  
+        ```sh
+        crontab -e
+        ```  
 
-Add the following line to run the script every day at 2:00 AM:  
-    ```sh
-    0 2 * * * /path/to/python3 /path/to/src/main.py
-    ```  
+    Add the following line to run the script every day at 2:00 AM:  
+        ```sh
+        0 2 * * * /path/to/python3 /path/to/src/main.py
+        ```  
 
 2. **Scheduling with a Batch File (Windows)**  
 
-Create a batch file (e.g., run_script.bat) using a text editor, and add the following line:  
+    Create a batch file (e.g., run_script.bat) using a text editor, and add the following line:  
 
-```powershell 
-C:\path\to\python.exe C:\path\to\src\main.py
-```  
+    ```powershell 
+    C:\path\to\python.exe C:\path\to\src\main.py
+    ```  
 
 Replace `C:\path\to\python.exe` with the actual path to your Python interpreter and `C:\path\to\src\main.py` with the actual path to your script.  
 
