@@ -164,6 +164,8 @@ cython_debug/
 
 # exclude production logs
 /logs/*
+*.log
+
 *.db
 
 .vscode/
