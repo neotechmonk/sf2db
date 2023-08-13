@@ -94,20 +94,21 @@ __db_config.yaml__
 
 __db_tables.json__  
 
-    Defines the relational DB structure  
-    Sample file is `config/examples/db_tables.json`  
+>Defines the relational DB structure  
+Sample file is `config/examples/db_tables.json`  
 
-    Program accesses this file using `src/sf2db/app/config.py`s `ConfigFiles.DB_TABLES`  
- 
-    Columns only support `name`, `type`, and `primary_key` as json attributes  
-    `type` is one of [SQLAlchemy Types](https://docs.sqlalchemy.org/en/20/core/types.html)  
-    Permitted types are in `src/sf2db/db/model_factory.py`'s `ALLOWED_SQLALCHEMY_TYPES`  
+>Program accesses this file using `src/sf2db/app/config.py`s `ConfigFiles.DB_TABLES`  
 
-__salesforce_to_db.json__  
-    Maps Salesforce objects with relational database tables defined in `db_tables.json`  
-    Sample file is `config/examples/db_tables.json`.   
+>Columns only support `name`, `type`, and `primary_key` as json attributes  
+`type` is one of [SQLAlchemy Types](https://docs.sqlalchemy.org/en/20/core/types.html)  
+Permitted types are in `src/sf2db/db/model_factory.py`'s `ALLOWED_SQLALCHEMY_TYPES`  
 
-    Program accesses this file using `src/sf2db/app/config.py`s `ConfigFiles.SF2DB_MAPPINGS`  
+__salesforce_to_db.json__
+
+>Maps Salesforce objects with relational database tables defined in `db_tables.json`  
+ Sample file is `config/examples/db_tables.json`.   
+
+ >Program accesses this file using `src/sf2db/app/config.py`s `ConfigFiles.SF2DB_MAPPINGS`  
 
 __salesforce_credentatials.yaml__
 
