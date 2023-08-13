@@ -11,6 +11,9 @@ class SalesforceCredentialConfigValueError(Exception):
     """Raised when there is a problem instantiating SalesforceCredentials object."""
     pass
 
+
+
+
 @dataclass
 class SalesforceCredentials: 
     username:str
@@ -21,15 +24,45 @@ class SalesforceCredentials:
     domain: str = field(default="login")
 
 
-class SalesforceAuthententicationError(Exception):
+class SalesforceLoginError(Exception):
     """Raised when SalesforceAuthenticationFailed is raised of Salesforce.session_id is falsely."""
+    pass
+
+class SalesforceFetchError(Exception):
+    """
+    Raised when there is an issue fetching data from Salesforce.
+    """
     pass
 
 SalesforceQueryResult = Dict[str,Dict[str,Any]]
 
 class SFInterface(Protocol):
-    def login(self)-> None:
+    """
+    Represents an interface for interacting with Salesforce.
+    Other Adapters must conform to this interface
+    """
+
+    def login(self) -> None:
+        """
+        Authenticate with Salesforce.
+        This method should handle the authentication process with Salesforce.
+        
+        Raises:
+            SalesforceLoginError: If there is an issue during the login process.
+        """
         ...
-    
-    def query(self, socl_query_str :str)->  List[SalesforceQueryResult]:
+
+    def query(self, socl_query_str: str) -> List[SalesforceQueryResult]:
+        """
+        Execute a SOQL query on Salesforce.
+        
+        Args:
+            socl_query_str (str): The SOQL query string to execute.
+            
+        Returns:
+            List[SalesforceQueryResult]: A list of query results.
+            
+        Raises:
+            SalesforceFetchError: If there is an issue fetching data from Salesforce.
+        """
         ...
