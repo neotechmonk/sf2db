@@ -23,9 +23,10 @@ The program one Salesforce objects with a database table. E.g. `Accounts` Salesf
 The program is limited in its ability to establish a relationship between multiple Salesforce objects and transform them into one a single relational table.  
 ## Installation  
 
-Clone the repo ensure  all files & sub-folders in `config` and `src` are present  
+Clone the repo ensure and all files & sub-folders in `config` and `src` are present  
 
-All configuration files in `config` folder must be setup prior to running the program. Refer to [Examples section](#examples) for the purpose of these configuration files
+All configuration files in `config` folder must be setup prior to running the program.  
+Refer to [Examples section](#examples) for the purpose of these configuration files
 
 ## Usage
 The program can to be used in part of 3rd party codebase or as a standalone utility in a batch process  
