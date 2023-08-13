@@ -126,14 +126,14 @@ __logger_config.json__
 
 >E.g. _sf2db-logger_ in the below extract  
 
-    ```json
-        "loggers": {
-            "sf2db-logger": {
-                "handlers": ["file", "console"],
-                "level": "DEBUG",
-                "propagate": true
-                }
-            }```  
+```json
+    "loggers": {
+        "sf2db-logger": {
+            "handlers": ["file", "console"],
+            "level": "DEBUG",
+            "propagate": true
+            }
+        }```  
 
 
 ## Contributing
