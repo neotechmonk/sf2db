@@ -79,6 +79,7 @@ Sample file is `config/examples/db_config.json`
 Program accesses this file using `src/sf2db/app/config.py`s `ConfigFiles.DB_URI`
 
 __db_tables.json__
+
 Defines the relational DB structure 
 Sample file is `config/examples/db_tables.json`
 
