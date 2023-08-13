@@ -1,0 +1,13 @@
+[
+      {
+          "salesforce-object": "Account",
+          "db-table": "User",
+          "column-mapping": {
+              "Id": "ID",
+              "Name": "NAME",
+              "PersonEmail": "EMAIL",
+              "IsDeleted": "ID_DELETED",
+              "CreatedDate": "DATE_CREATED"
+          }
+      }
+]

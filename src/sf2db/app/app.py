@@ -23,18 +23,23 @@ class App:
         self._path_sf_credentials = path_sf_credentials
         self._path_sf2db_mappings = path_sf2db_mappings
         self._path_db_table_def = path_db_table_def
-        self._path_db_uri = path_db_uri
-
-
-        self._sf_adapter = salesforce_client_adapter
-
-        self.db_session = DBSession(db_uri=self._path_db_uri)
-        self.sf_client :SFInterface = None
+        self.path_db_uri = path_db_uri
 
         # Placehodlers of configs
+        self._db_connection_str:str =""
         self.sf2db_mappings : List [TableMapping]
         self.db_tables : List[DBTable]
 
+        self._sf_adapter = salesforce_client_adapter
+
+        self.db_session = None
+        self.sf_client :SFInterface = None
+
+    def _create_db_session(self):
+        """ Loads the target db connection string from  `db_config` and create an instance of DB Session
+        """
+        self._db_connection_str = yaml_reader.read_yaml(self.path_db_uri).get("connection-string")
+        self.db_session = DBSession(db_uri=self._db_connection_str)
 
     def _load_sf2db_mappings(self):
         """ Saves all mappings of Salesforce objects to DB Tables from `salesforce_to_db.json` """
@@ -102,11 +107,12 @@ class App:
         """Run the data synchronization process.
 
             This method orchestrates the process of synchronizing data from Salesforce to the database.
-            It loads mapping configurations, generates database tables, creates a Salesforce client,
+            It loads db cofonfigs,  mapping configurations, generates database tables, creates a Salesforce client,
             and then iterates through each mapping to persist data.
 
             This method encapsulates the complete data synchronization process.
         """
+        self._create_db_session()
         self._load_sf2db_mappings()
         self._generate_db_tables()
         self._create_salesforce_connection()

@@ -1,0 +1,24 @@
+# db_config.yaml
+# required driver package needs to be installed to match target database
+# this can either be directly installed as per below examples or included in requirements.txt
+
+connection-string: sqlite:///sf2db_sqllite_database.db
+
+## EXAMPLES
+# sqlite:
+  # connection-string: : sqlite:///database.db
+
+# mysql:
+  # connection-string: : mysql+pymysql://username:password@localhost/db_name
+  # pip install pymysql
+
+
+# postgresql:
+  # connection-string: : postgresql://username:password@localhost/db_name
+  # pip install psycopg2
+
+
+# sqlserver:
+  # connection-string: : mssql+pyodbc://username:password@server_name/db_name?driver=SQL+Server
+  #pip install pyodbc
+
