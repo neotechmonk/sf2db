@@ -1,29 +1,36 @@
 
+import traceback
 from typing import List
 
 from sf2db.db.model_factory import (generate_db_table,
                                     generate_db_table_definition)
 from sf2db.db.models import DBTable
-from sf2db.db.session import DBSession
-from sf2db.mapping.model_factory import mapping_factory
+from sf2db.db.session import (DatabaseInitializationError,
+                              DatabaseOperationError, DBSession,
+                              DuplicateRecordError)
+from sf2db.mapping.model_factory import MappingValueError, mapping_factory
 from sf2db.mapping.models import TableMapping
 from sf2db.salesforce import SFInterface, soql
 from sf2db.util import json_reader, yaml_reader
+from sf2db.util.logging import logger
 from sf2db.util.sf_to_db_converter import convert
 
-
+log = logger()
+    
 class App:
     def __init__(self,
                  path_sf_credentials: str,
                  path_sf2db_mappings: str,
                  path_db_table_def: str,
-                 path_db_uri: str,
+                 path_db_config: str,
                  salesforce_client_adapter : SFInterface
                  ) -> None:
+        log.debug("Instantiating src.sf2db.app.App")  
+
         self._path_sf_credentials = path_sf_credentials
         self._path_sf2db_mappings = path_sf2db_mappings
         self._path_db_table_def = path_db_table_def
-        self.path_db_uri = path_db_uri
+        self.path_db_config = path_db_config
 
         # Placehodlers of configs
         self._db_connection_str:str =""
@@ -38,14 +45,28 @@ class App:
     def _create_db_session(self):
         """ Loads the target db connection string from  `db_config` and create an instance of DB Session
         """
-        self._db_connection_str = yaml_reader.read_yaml(self.path_db_uri).get("connection-string")
-        self.db_session = DBSession(db_uri=self._db_connection_str)
+        try : 
+            self._db_connection_str = yaml_reader.read_yaml(self.path_db_config).get("connection-string")
+            self.db_session = DBSession(db_uri=self._db_connection_str)
+        except [yaml_reader.YAMLFileNotFoundError, yaml_reader.YAMLFileNotFoundError] as e : 
+            log.exception(f"Error loading `salesforce_to_db.json` file @ {self.path_db_config} : {str(e)}")  
+        except DatabaseInitializationError as e : 
+            log.exception(f"Error initialising database : {str(e)}")
+        else : 
+            log.debug(f"Successfully initialized the database")
+
 
     def _load_sf2db_mappings(self):
         """ Saves all mappings of Salesforce objects to DB Tables from `salesforce_to_db.json` """
-        _config_data = json_reader.read_json(self._path_sf2db_mappings)
-        self.sf2db_mappings = [mapping_factory (mapping = _cd) for _cd in _config_data]
-
+        try: 
+            _config_data = json_reader.read_json(self._path_sf2db_mappings)
+            self.sf2db_mappings = [mapping_factory (mapping = _cd) for _cd in _config_data]
+        except [json_reader.JSONFileNotFoundError, json_reader.JSONParseError] as e : 
+            log.exception(f"Error loading `salesforce_to_db.json` file @ {self._path_sf2db_mappings} : {str(e)}") 
+        except [MappingValueError] as e : 
+            log.exception(f"Error create `TableMapping` from `salesforce_to_db.json` file @ {self._path_sf2db_mappings}  : {str(e)}") 
+     
+     
     def _generate_db_tables(self):
         """ Generates SQLAlchemy.Base classes based on definitions in `salesforce_to_db.json`"""
         _config_data = json_reader.read_json(self._path_db_table_def)
@@ -101,9 +122,12 @@ class App:
         # Bulk insert records into the database
         with self.db_session as db_session:
             db_session.add_all(db_records)
+
      
 
     def run(self):
+        log.info("Starting src.sf2db.app.App.run()")  
+
         """Run the data synchronization process.
 
             This method orchestrates the process of synchronizing data from Salesforce to the database.
@@ -118,4 +142,10 @@ class App:
         self._create_salesforce_connection()
 
         for mapping in self.sf2db_mappings:
-            self._persist_salesforce_to_db(mapping = mapping)
+            try: 
+                self._persist_salesforce_to_db(mapping = mapping)
+            except (DuplicateRecordError, DatabaseOperationError) as e: 
+                log.exception(f"Error saving records to the database  : {str(e)}") 
+            else: 
+                log.info(f"Successfully stored records from Salesforce object :{mapping.salesforce_object_name} into database table : {mapping.db_table_name}")
+            

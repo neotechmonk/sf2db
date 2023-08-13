@@ -16,16 +16,28 @@ MappingData = Dict[str, Dict[str, str]]
 """
 
 
+class MappingValueError(Exception):
+    """Exception raised for invalid values in mapping configurations."""
+    pass
+
+
 def mapping_factory(mapping: MappingData) -> TableMapping:
-    salesforce_object = mapping.get("salesforce-object", "")
-    db_table = mapping.get("db-table", "")
-
+    salesforce_object = mapping.get("salesforce-object", None)
+    db_table = mapping.get("db-table", None)
     column_mapping = mapping.get("column-mapping", {})
-    field_mappings = [ColumnMapping(saleforce_field=key, db_column_name=value) for key, value in column_mapping.items()]
+    try:
+        field_mappings = [ColumnMapping(saleforce_field=key, db_column_name=value) for key, value in column_mapping.items()]
 
-    table_mapping = TableMapping(salesforce_object_name=salesforce_object, db_table_name=db_table, col_mappings=field_mappings)
+        table_mapping = TableMapping(salesforce_object_name=salesforce_object, db_table_name=db_table, col_mappings=field_mappings)
+        
+        return table_mapping
+    except (KeyError, AttributeError, TypeError, ValueError) as e:
+        raise MappingValueError(f"Error creating `TableMapping` object; Caused by mismatch in keys/values when instantiating `TableMapping`: {str(e)}")
+    except Exception as e:
+        raise MappingValueError(f"Unknwon error creating `TableMapping` object`: {str(e)}")
+
     
-    return table_mapping
+    
 
 
 if __name__ == "__main__":
