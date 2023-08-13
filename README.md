@@ -104,21 +104,18 @@ __`db_tables.json`__
     Permitted types are in `src/sf2db/db/model_factory.py`'s `ALLOWED_SQLALCHEMY_TYPES`  
 
 __`salesforce_to_db.json`__  
-
     Maps Salesforce objects with relational database tables defined in `db_tables.json`  
     Sample file is `config/examples/db_tables.json`.   
 
     Program accesses this file using `src/sf2db/app/config.py`s `ConfigFiles.SF2DB_MAPPINGS`  
 
-__`salesforce_credentatials.yaml`__  
-
+__`salesforce_credentatials.yaml`__
     Maps Salesforce objects with relational database tables defined in `db_tables.json`  
     Sample file is `config/examples/salesforce_credentatials.yaml`.   
 
     Program accesses this file using `src/sf2db/app/config.py`s `ConfigFiles.SALESFORCE_CREDENTIALS`  
 
-__`logger_config.json`__  
-
+__`logger_config.json`__
     [Logging configuration for Python's core `logging` module](https://docs.python.org/3/library/logging.config.html)  
     Sample file is `config/examples/logger_config.json`.   
 
