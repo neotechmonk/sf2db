@@ -126,13 +126,15 @@ __`logger_config.json`__
     Main logger name is prescribed here `Configs.LOGGER_APP_NAME`. This should match the below in the logger config file  
     E.g. _sf2db-logger_ in the below extract
         ```json
-        "loggers": {
-        "sf2db-logger": {
-            "handlers": ["file", "console"],
-            "level": "DEBUG",
-            "propagate": true
-        }```  
-        
+            "loggers": {
+            "sf2db-logger": {
+                "handlers": ["file", "console"],
+                "level": "DEBUG",
+                "propagate": true
+             }
+            }
+        ```  
+
 
 ## Contributing
 
