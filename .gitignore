@@ -164,6 +164,7 @@ cython_debug/
 
 # exclude production logs
 /logs/*
+!/logs/.gitkeep
 *.log
 
 *.db
