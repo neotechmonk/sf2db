@@ -117,12 +117,12 @@ __salesforce_credentatials.yaml__
 
 __logger_config.json__
 
-    [Logging configuration for Python's core `logging` module](https://docs.python.org/3/library/logging.config.html)  
-    Sample file is `config/examples/logger_config.json`.   
+[Logging configuration for Python's core `logging` module](https://docs.python.org/3/library/logging.config.html)  
+>Sample file is `config/examples/logger_config.json`.   
 
-    Program accesses this file using `src/sf2db/app/config.py`s `ConfigFiles.LOGGER_CONFIG`  
-    Main logger name is prescribed here `Configs.LOGGER_APP_NAME`. This should match the below in the logger config file  
-    E.g. _sf2db-logger_ in the below extract
+>Program accesses this file using `src/sf2db/app/config.py`s `ConfigFiles.LOGGER_CONFIG`  
+>Main logger name is prescribed here `Configs.LOGGER_APP_NAME`. This should match the below in the logger config file  
+E.g. _sf2db-logger_ in the below extract
         ```json
             "loggers": {
                 "sf2db-logger": {
@@ -135,10 +135,10 @@ __logger_config.json__
 
 ## Contributing
 
->You can contribute in various ways, including reporting issues, suggesting improvements, and submitting pull requests.
+You can contribute in various ways, including reporting issues, suggesting improvements, and submitting pull requests.
 
 ### Reporting Issues
->If you find a bug or have a feature request, please open an issue on our [GitHub repository](https://github.com/neotechmonk/cmcs/issues). Provide as much detail as possible so that the issue can be undertood and reproduced  
+If you find a bug or have a feature request, please open an issue on our [GitHub repository](https://github.com/neotechmonk/cmcs/issues). Provide as much detail as possible so that the issue can be undertood and reproduced  
 
 ### Suggesting Enhancements
 
