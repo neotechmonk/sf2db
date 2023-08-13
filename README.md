@@ -52,7 +52,7 @@ Examples of batch process
     C:\path\to\python.exe C:\path\to\src\main.py
     ```  
 
-Replace `C:\path\to\python.exe` with the actual path to your Python interpreter and `C:\path\to\src\main.py` with the actual path to your script.  
+    Replace `C:\path\to\python.exe` with the actual path to your Python interpreter and `C:\path\to\src\main.py` with the actual path to your script.  
 
 ## Developer Notes  
 
