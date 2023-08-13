@@ -35,14 +35,14 @@ Examples of batch process
 1. **Scheduling with Cron (Unix-like systems)**  
 
 Edit cron  
-```sh
-crontab -e
-```  
+    ```sh
+    crontab -e
+    ```  
 
 Add the following line to run the script every day at 2:00 AM:  
-```sh
-0 2 * * * /path/to/python3 /path/to/src/main.py
-```  
+    ```sh
+    0 2 * * * /path/to/python3 /path/to/src/main.py
+    ```  
 
 2. **Scheduling with a Batch File (Windows)**  
 
@@ -79,36 +79,36 @@ Note that all configuration items are case sensitive
 
 __db_config.yaml__
 
-Defines the connection string to the target database  
-Sample file is `config/examples/db_config.json`  
+    Defines the connection string to the target database  
+    Sample file is `config/examples/db_config.json`  
 
-Program accesses this file using `src/sf2db/app/config.py`s `ConfigFiles.DB_URI`  
+    Program accesses this file using `src/sf2db/app/config.py`s `ConfigFiles.DB_URI`  
 
 __db_tables.json__  
 
-Defines the relational DB structure  
-Sample file is `config/examples/db_tables.json`  
+    Defines the relational DB structure  
+    Sample file is `config/examples/db_tables.json`  
 
-Program accesses this file using `src/sf2db/app/config.py`s `ConfigFiles.DB_TABLES`  
+    Program accesses this file using `src/sf2db/app/config.py`s `ConfigFiles.DB_TABLES`  
  
-Columns only support `name`, `type`, and `primary_key` as json attributes  
-`type` is one of [SQLAlchemy Types](https://docs.sqlalchemy.org/en/20/core/types.html)  
-Permitted types are in `src/sf2db/db/model_factory.py`'s `ALLOWED_SQLALCHEMY_TYPES`  
+    Columns only support `name`, `type`, and `primary_key` as json attributes  
+    `type` is one of [SQLAlchemy Types](https://docs.sqlalchemy.org/en/20/core/types.html)  
+    Permitted types are in `src/sf2db/db/model_factory.py`'s `ALLOWED_SQLALCHEMY_TYPES`  
 
 __salesforce_to_db.json__  
 
-Maps Salesforce objects with relational database tables defined in `db_tables.json`  
-Sample file is `config/examples/db_tables.json`.   
+    Maps Salesforce objects with relational database tables defined in `db_tables.json`  
+    Sample file is `config/examples/db_tables.json`.   
 
-Program accesses this file using `src/sf2db/app/config.py`s `ConfigFiles.SF2DB_MAPPINGS`  
+    Program accesses this file using `src/sf2db/app/config.py`s `ConfigFiles.SF2DB_MAPPINGS`  
 
 __salesforce_credentatials.yaml__  
 
-Maps Salesforce objects with relational database tables defined in `db_tables.json`  
-Sample file is `config/examples/salesforce_credentatials.yaml`.   
-Production file _must be renamed_ to `salesforce_credentatials.yaml`  
+    Maps Salesforce objects with relational database tables defined in `db_tables.json`  
+    Sample file is `config/examples/salesforce_credentatials.yaml`.   
+    Production file _must be renamed_ to `salesforce_credentatials.yaml`  
 
-Program accesses this file using `src/sf2db/app/config.py`s `ConfigFiles.SALESFORCE_CREDENTIALS`  
+    Program accesses this file using `src/sf2db/app/config.py`s `ConfigFiles.SALESFORCE_CREDENTIALS`  
 
 ## Contributing
 
