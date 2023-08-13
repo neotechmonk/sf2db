@@ -72,9 +72,6 @@ __Folder organisation__
     - `/src/salesforce` : concerned with interacting with salesforce site
     - `/src/mapping` : mapping between salesforce objects and database tables
     - `/src/util` : utility functions used by other modules
-  
-
-
 - `/test/` : unit tests *not implemented yet  
 ## Future developments
 
